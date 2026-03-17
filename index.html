@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROOT // EXECUTIVE CONSOLE</title>
+    <title>ROOT // EXECUTIVE CONSOLE // ETERNAL</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* DYNAMIC ROOT VARIABLES */
+        /* CSS REINFORCEMENT */
         :root { 
             --bg: #000000; 
-            --card-bg: rgba(5, 5, 5, 0.8); /* SET TO TRANSPARENT */
+            --cb: rgba(5, 5, 5, 0.85); /* HUD TRANSPARENCY */
             --primary: #00ff41; 
             --text: var(--primary); 
             --border: rgba(0, 255, 65, 0.3); 
@@ -22,84 +25,67 @@
         * { box-sizing: border-box; font-family: 'JetBrains Mono', monospace; }
         
         body { 
-            background-color: var(--bg); 
-            color: var(--text); 
-            padding: 20px; 
-            display: flex; 
-            justify-content: center; 
-            background-image: linear-gradient(var(--scanline) 1px, transparent 1px);
-            background-size: 100% 3px;
-            transition: all 0.2s ease;
+            background-color: var(--bg); color: var(--text); padding: 15px; display: flex; justify-content: center; 
+            background-image: linear-gradient(var(--scanline) 1px, transparent 1px); background-size: 100% 3px;
         }
 
         .container { 
-            width: 100%; 
-            max-width: 650px; 
-            background: var(--card-bg); 
-            /* THE HUD EFFECT */
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 30px; 
-            border: 1px solid var(--border); 
-            box-shadow: 0 0 20px rgba(0,0,0,0.8), inset 0 0 15px var(--scanline); 
-            margin-top: 20px; 
-            transition: all 0.2s ease;
+            width: 100%; max-width: 750px; background: var(--cb); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 25px; border: 1px solid var(--border); box-shadow: 0 0 40px rgba(0,0,0,1); margin-top: 10px; 
         }
 
-        .header-container { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px dashed var(--border); padding-bottom: 15px; margin-bottom: 20px; }
-        
-        h2 { color: var(--primary); text-transform: uppercase; letter-spacing: 3px; margin: 0; text-shadow: 0 0 8px var(--scanline); }
-        .badge { font-size: 0.6rem; background: var(--danger); color: #000; padding: 4px 8px; display: inline-block; font-weight: bold; box-shadow: 0 0 5px var(--danger); margin-top: 5px; }
+        /* HEADER UI */
+        .header-ui { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px dashed var(--border); padding-bottom: 15px; margin-bottom: 20px; }
+        h2 { color: var(--primary); text-transform: uppercase; letter-spacing: 3px; margin: 0; text-shadow: 0 0 10px var(--primary); font-size: 1.1rem; }
 
-        .color-selector { background: rgba(0,0,0,0.5); color: var(--primary); border: 1px dashed var(--primary); padding: 5px; font-size: 0.6rem; cursor: pointer; outline: none; width: 100%; margin-top: 5px; }
-        .color-selector option { background: #000; color: #fff; }
+        .optics-panel { width: 100%; margin-top: 10px; }
+        .color-selector { background: rgba(0,0,0,0.8); color: var(--primary); border: 1px dashed var(--primary); padding: 8px; font-size: 0.65rem; cursor: pointer; width: 100%; outline: none; }
+        
+        .avatar-panel { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+        .avatar-box { width: 60px; height: 60px; border: 1px solid var(--primary); background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: var(--primary); box-shadow: 0 0 15px var(--scanline); }
+        .avatar-box svg { width: 45px; height: 45px; }
+        .avatar-selector { background: transparent; color: var(--primary); border: 1px dashed var(--primary); font-size: 0.55rem; padding: 2px; width: 110px; text-align: right; cursor: pointer; }
 
-        .avatar-wrapper { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
-        .avatar-box { width: 50px; height: 50px; border: 1px solid var(--primary); background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: var(--primary); box-shadow: 0 0 15px var(--scanline); transition: 0.2s ease; }
-        .avatar-box svg { width: 35px; height: 35px; }
-        .avatar-dropdown { background: rgba(0,0,0,0.8); color: var(--primary); border: 1px dashed var(--primary); font-size: 0.6rem; padding: 2px 5px; width: 120px; text-align: right; }
+        /* MODULE: VISUAL EYE */
+        .camera-panel { background: #000; border: 1px solid var(--primary); margin-bottom: 20px; display: none; overflow: hidden; position: relative; }
+        #camera-feed { width: 100%; height: auto; display: block; filter: grayscale(1) contrast(1.3); }
+        .capture-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 30px solid rgba(0,0,0,0.6); pointer-events: none; }
+        .btn-snap { background: var(--danger); color: #000; padding: 15px; width: 100%; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; }
 
-        .textarea-container { position: relative; margin-bottom: 20px; }
-        textarea { width: 100%; height: 140px; background: rgba(0,0,0,0.4); color: var(--text); border: 1px solid var(--border); padding: 15px; outline: none; resize: vertical; transition: 0.2s ease; font-size: 0.8rem; line-height: 1.4; }
-        textarea:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--scanline); }
-        
-        #drop-zone { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); border: 2px dashed var(--primary); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: bold; letter-spacing: 2px; text-align: center; opacity: 0; pointer-events: none; transition: 0.2s; z-index: 10; }
-        #drop-zone.active { opacity: 1; pointer-events: all; box-shadow: inset 0 0 30px var(--scanline); }
+        /* NAVIGATION & INPUT */
+        .nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .btn-act { background: var(--primary); color: #000; padding: 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; border: none; text-transform: uppercase; text-align: center; }
+        .btn-nav-sec { background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 12px; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
+        .btn-nav-sec:disabled { border-color: #333; color: #333; cursor: not-allowed; }
 
-        .panel { background: rgba(2,2,2,0.4); border: 1px solid var(--border); padding: 15px; margin-bottom: 20px; transition: 0.2s ease; }
-        .panel-title { font-size: 0.7rem; color: var(--primary); letter-spacing: 2px; margin-bottom: 10px; display: block; font-weight: bold; border-bottom: 1px dashed var(--border); padding-bottom: 5px; text-shadow: 0 0 5px var(--scanline); }
+        textarea { width: 100%; height: 180px; background: rgba(0,0,0,0.6); color: var(--primary); border: 1px solid var(--border); padding: 15px; outline: none; resize: vertical; font-size: 0.85rem; line-height: 1.5; margin-bottom: 20px; }
+
+        /* PANEL ARCHITECTURE */
+        .panel { background: rgba(2,2,2,0.5); border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; }
+        .panel-title { font-size: 0.7rem; color: var(--primary); letter-spacing: 2px; margin-bottom: 12px; display: block; font-weight: bold; border-bottom: 1px dashed var(--border); padding-bottom: 8px; }
+        .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        label { font-size: 0.65rem; color: var(--accent); display: block; margin-bottom: 5px; text-transform: uppercase; font-weight: bold; }
+        select, input[type="range"] { width: 100%; padding: 10px; background: rgba(0,0,0,0.9); color: var(--primary); border: 1px solid var(--border); font-size: 0.8rem; outline: none; }
+
+        /* MASTER BUTTONS */
+        .master-btn-row { display: flex; gap: 15px; }
+        button.master { flex: 1; padding: 18px; border: 1px solid var(--primary); font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; transition: 0.3s; }
+        .btn-execute { background: var(--primary); color: #000; }
+        .btn-kill { background: transparent; color: var(--danger); border-color: var(--danger); }
         
-        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        label { font-size: 0.7rem; color: var(--accent); display: block; margin-bottom: 5px; text-transform: uppercase; transition: 0.2s ease; }
-        select, input[type="range"], input[type="file"] { width: 100%; padding: 8px; background: rgba(0,0,0,0.5); color: var(--primary); border: 1px solid var(--border); outline: none; font-size: 0.8rem; transition: 0.2s ease; }
-        input[type="file"] { border: 1px dashed var(--primary); cursor: pointer; }
-        
-        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
-        button { flex: 1; padding: 15px; border: 1px solid var(--primary); font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: 0.2s; font-size: 0.8rem; }
-        .btn-play { background: var(--primary); color: #000; box-shadow: 0 0 10px var(--scanline); }
-        .btn-play:hover { background: transparent; color: var(--primary); box-shadow: inset 0 0 15px var(--primary); }
-        .btn-pause { background: transparent; color: #eab308; border-color: #eab308; }
-        .btn-pause:hover { background: rgba(234, 179, 8, 0.1); box-shadow: inset 0 0 10px #eab308;}
-        .btn-stop { background: transparent; color: var(--danger); border-color: var(--danger); }
-        .btn-stop:hover { background: rgba(255, 0, 60, 0.1); box-shadow: inset 0 0 15px var(--danger); }
-        
-        #status-indicator { font-size: 0.7rem; color: var(--accent); text-align: right; margin-top: 10px; font-weight: bold; letter-spacing: 1px; }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: var(--border); }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+        .sys-status { font-size: 0.7rem; color: var(--accent); text-align: right; margin-top: 10px; font-weight: bold; text-transform: uppercase; }
+        canvas#hidden-canvas { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-container">
+    <div class="header-ui">
         <div>
-            <h2>AUDIO // MIXER</h2>
-            <span class="badge">ROOT PRIVILEGES ACTIVE</span>
-            <div style="margin-top: 10px;">
+            <h2>EXECUTIVE // HUD</h2>
+            <div class="optics-panel">
                 <select id="color-select" class="color-selector">
-                    <option value="#00ff41">>> OPTICS: TOXIC GREEN (G)</option>
+                    <option value="#00ff41">>> OPTICS: MATRIX GREEN (G)</option>
                     <option value="#ff0000">>> OPTICS: SYSTEM RED (R)</option>
                     <option value="#ff7700">>> OPTICS: HAZARD ORANGE (O)</option>
                     <option value="#ffea00">>> OPTICS: WARNING YELLOW (Y)</option>
@@ -109,226 +95,234 @@
                 </select>
             </div>
         </div>
-        <div class="avatar-wrapper">
+        <div class="avatar-panel">
             <div id="avatar-display" class="avatar-box"></div>
-            <select id="avatar-select" class="avatar-dropdown">
+            <select id="avatar-select" class="avatar-selector">
                 <option value="ghost">GHOST PROTOCOL</option>
                 <option value="reaper">THE REAPER</option>
                 <option value="machine">MACHINE MIND</option>
             </select>
         </div>
     </div>
-    
-    <div class="textarea-container" id="drop-container">
-        <div id="drop-zone">[ DROP ENCRYPTED .PDF HERE TO EXTRACT ]</div>
-        <textarea id="text-input" placeholder="> INJECT RAW DATA OR DROP PDF HERE..."></textarea>
+
+    <div class="camera-panel" id="eye-module">
+        <video id="camera-feed" autoplay playsinline></video>
+        <div class="capture-overlay"></div>
+        <button class="btn-snap" id="snap-btn">SNAP & DECRYPT REALITY</button>
     </div>
+    <canvas id="hidden-canvas"></canvas>
     
+    <div class="nav-grid">
+        <button class="btn-act" id="toggle-cam">VISUAL EYE: ON/OFF</button>
+        <label class="btn-act" style="cursor:pointer; flex:1;">
+            UPLINK PDF
+            <input type="file" id="pdf-file" accept="application/pdf" style="display:none;">
+        </label>
+        <button class="btn-nav-sec" id="prev-pg" disabled>BACK PAGE</button>
+        <button class="btn-nav-sec" id="next-pg" disabled>NEXT PAGE</button>
+    </div>
+
+    <textarea id="main-text-area" placeholder="> AWAITING DATA INGESTION..."></textarea>
+
     <div class="panel">
-        <span class="panel-title">SYS.UPLINK // LINGUISTIC DECRYPTION (REQUIRES NETWORK)</span>
-        <div class="controls">
+        <span class="panel-title">SYS.UPLINK // LINGUISTIC DECRYPTION</span>
+        <div class="controls-grid">
             <div>
                 <label>> TARGET_DIALECT</label>
-                <select id="translate-lang">
-                    <option value="es">>> SPANISH (es)</option>
-                    <option value="fr">>> FRENCH (fr)</option>
-                    <option value="de">>> GERMAN (de)</option>
-                    <option value="ja">>> JAPANESE (ja)</option>
-                    <option value="ru">>> RUSSIAN (ru)</option>
+                <select id="lang-target">
+                    <option value="en">>> TO ENGLISH (DETECT)</option>
+                    <option value="es">>> TO SPANISH</option>
+                    <option value="fr">>> TO FRENCH</option>
+                    <option value="de">>> TO GERMAN</option>
+                    <option value="ja">>> TO JAPANESE</option>
                 </select>
             </div>
             <div>
                 <label>> INITIATE_OVERRIDE</label>
-                <button id="btn-translate" style="padding: 8px; font-size: 0.7rem; width: 100%; border: 1px dashed var(--primary); background: transparent; color: var(--primary);">ESTABLISH UPLINK</button>
+                <button id="translate-btn" style="padding:10px; font-size:0.7rem; width:100%; border:1px dashed var(--primary); background:transparent; color:var(--primary); cursor:pointer;">ESTABLISH UPLINK</button>
             </div>
         </div>
     </div>
 
     <div class="panel">
-        <span class="panel-title">SYS.TRACK_01 // NARRATION</span>
-        <div class="controls">
-            <div style="grid-column: span 2;">
-                <label>> SELECT_VOCAL_NODE</label>
-                <select id="voice-select"></select>
+        <span class="panel-title">SYS.AUDIO // GAIN CALIBRATION</span>
+        <div class="controls-grid">
+            <div>
+                <label>> NARRATION_GAIN: <span id="vocal-vol-label">100%</span></label>
+                <input type="range" id="vocal-vol-slider" min="0" max="1" value="1" step="0.05">
             </div>
             <div>
-                <label>> PACING: <span id="rate-val">1.0</span></label>
-                <input type="range" id="rate" min="0.5" max="2" value="1" step="0.1">
-            </div>
-            <div>
-                <label>> TONE: <span id="pitch-val">1.0</span></label>
-                <input type="range" id="pitch" min="0" max="2" value="1" step="0.1">
+                <label>> AMBIENT_GAIN: <span id="amb-vol-label">20%</span></label>
+                <input type="range" id="amb-vol-slider" min="0" max="1" value="0.2" step="0.05">
             </div>
         </div>
     </div>
 
     <div class="panel">
-        <span class="panel-title">SYS.TRACK_02 // ENVIRONMENT & MUSIC</span>
-        <div class="controls">
+        <span class="panel-title">TRACK_01 // NARRATION CONFIG</span>
+        <div class="controls-grid">
             <div style="grid-column: span 2;">
-                <label>> OVERRIDE_SCENERY</label>
-                <select id="ambient-select">
-                    <option value="none">>> NULL (SILENCE)</option>
-                    <option value="https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3">>> WOODS & WATER (SPRING)</option>
-                    <option value="https://cdn.pixabay.com/download/audio/2022/10/25/audio_24867dd116.mp3?filename=cyberpunk-2099-10701.mp3">>> HARDCORE DJ (CYBERPUNK BEAT)</option>
-                    <option value="https://cdn.pixabay.com/download/audio/2022/03/15/audio_517d47bf14.mp3?filename=police-siren-loop-7132.mp3">>> NYPD EMERGENCY SIRENS</option>
-                    <option value="https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=heavy-rain-nature-sounds-8186.mp3">>> HEAVY PRECIPITATION</option>
-                    <option value="https://cdn.pixabay.com/download/audio/2022/03/24/audio_3a9fc192fa.mp3?filename=cinematic-drone-whoosh-114034.mp3">>> ORBITAL BOMBARDMENT</option>
-                    <option value="custom" id="custom-option" style="display:none;">>> CUSTOM LOCAL AUDIO ACTIVE</option>
-                </select>
+                <label>> SELECT_VOCAL_NODE (SIRI/GOOGLE/LOCAL)</label>
+                <select id="voice-dropdown"></select>
             </div>
-            <div style="grid-column: span 2;">
-                <label>> UPLOAD_CUSTOM_AUDIO (MP3/WAV)</label>
-                <input type="file" id="custom-audio" accept="audio/*">
+            <div>
+                <label>> PACING</label>
+                <input type="range" id="rate-slider" min="0.5" max="2" value="1" step="0.1">
             </div>
-            <div style="grid-column: span 2;">
-                <label>> AMBIENT_GAIN: <span id="volume-val">20%</span></label>
-                <input type="range" id="ambient-volume" min="0" max="1" value="0.2" step="0.05">
+            <div>
+                <label>> TONE</label>
+                <input type="range" id="pitch-slider" min="0" max="2" value="1" step="0.1">
             </div>
         </div>
     </div>
 
-    <audio id="ambient-player" loop crossorigin="anonymous"></audio>
-
-    <div class="btn-group">
-        <button class="btn-play" id="btn-speak">EXECUTE</button>
-        <button class="btn-pause" id="btn-pause">HALT</button>
-        <button class="btn-stop" id="btn-stop">KILL PROCESS</button>
+    <div class="panel">
+        <span class="panel-title">TRACK_02 // ENVIRONMENT</span>
+        <select id="ambient-dropdown">
+            <option value="none">>> NULL (SILENCE)</option>
+            <option value="https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3">>> WOODS & WATER</option>
+            <option value="https://cdn.pixabay.com/audio/2022/10/25/audio_24867dd116.mp3">>> HARDCORE DJ BEAT</option>
+            <option value="https://cdn.pixabay.com/audio/2022/03/15/audio_517d47bf14.mp3">>> NYPD SIRENS</option>
+        </select>
     </div>
 
-    <div id="status-indicator">SYS.STATUS: AWAITING INPUT...</div>
+    <audio id="amb-audio-player" loop crossorigin="anonymous"></audio>
+
+    <div class="master-btn-row">
+        <button class="master btn-execute" id="master-execute">EXECUTE</button>
+        <button class="master btn-kill" id="master-kill">KILL PROCESS</button>
+    </div>
+    
+    <div class="sys-status" id="sys-status-bar">STATUS: STANDBY.</div>
+    <div id="pg-status-bar" style="font-size:0.6rem; color:var(--accent); margin-top:-12px;">PAGE: 0/0</div>
 </div>
 
 <script>
-    // --- PDF DECRYPTION ENGINE ---
+    /* --- SYSTEM GLOBAL REFS --- */
+    const speech = window.speechSynthesis;
+    const player = document.getElementById('amb-audio-player');
+    const mainBuffer = document.getElementById('main-text-area');
+    const statusBar = document.getElementById('sys-status-bar');
+
+    /* --- TRIPLE AVATAR PROTOCOL --- */
+    const avatarData = {
+        ghost: `<svg viewBox="0 0 100 100"><path d="M 20 90 L 20 50 Q 50 0 80 50 L 80 90 Z" fill="none" stroke="currentColor" stroke-width="4"/><circle cx="50" cy="40" r="5" fill="currentColor"/></svg>`,
+        reaper: `<svg viewBox="0 0 100 100"><polygon points="20,20 80,20 70,60 60,90 40,90 30,60" fill="none" stroke="currentColor" stroke-width="4"/><rect x="35" y="45" width="30" height="4" fill="currentColor"/></svg>`,
+        machine: `<svg viewBox="0 0 100 100" style="color:var(--danger);"><circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="4"/><circle cx="50" cy="50" r="15" fill="currentColor"/></svg>`
+    };
+    const avBox = document.getElementById('avatar-display'), avSel = document.getElementById('avatar-select');
+    avSel.onchange = function() { 
+        avBox.innerHTML = avatarData[this.value]; 
+        avBox.style.borderColor = (this.value === 'machine') ? 'var(--danger)' : 'var(--primary)';
+    };
+    avSel.onchange();
+
+    /* --- BI-DIRECTIONAL DECRYPTION (TRANSLATION) --- */
+    document.getElementById('translate-btn').onclick = async function() {
+        const text = mainBuffer.value.trim();
+        if (!text) return;
+        statusBar.innerText = "STATUS: ESTABLISHING SECURE UPLINK...";
+        const target = document.getElementById('lang-target').value;
+        const pair = (target === 'en') ? 'autodetect|en' : `en|${target}`;
+        try {
+            const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${pair}`);
+            const data = await res.json();
+            mainBuffer.value = data.responseData.translatedText;
+            statusBar.innerText = "STATUS: DECRYPTION SUCCESSFUL.";
+        } catch (e) { statusBar.innerText = "STATUS: UPLINK FAILED."; }
+    };
+
+    /* --- GAIN CALIBRATION LOGIC --- */
+    const vVol = document.getElementById('vocal-vol-slider'), vLab = document.getElementById('vocal-vol-label');
+    const aVol = document.getElementById('amb-vol-slider'), aLab = document.getElementById('amb-vol-label');
+    vVol.oninput = function() { vLab.innerText = Math.round(this.value * 100) + "%"; };
+    aVol.oninput = function() { player.volume = this.value; aLab.innerText = Math.round(this.value * 100) + "%"; };
+
+    /* --- VISUAL EYE (OCR) --- */
+    const video = document.getElementById('camera-feed'), canvas = document.getElementById('hidden-canvas');
+    let stream = null;
+    document.getElementById('toggle-cam').onclick = async function() {
+        const mod = document.getElementById('eye-module');
+        if (mod.style.display === 'block') {
+            mod.style.display = 'none';
+            if (stream) stream.getTracks().forEach(t => t.stop());
+        } else {
+            mod.style.display = 'block';
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                video.srcObject = stream;
+            } catch (e) { statusBar.innerText = "EYE LINK FAILED."; }
+        }
+    };
+    document.getElementById('snap-btn').onclick = function() {
+        statusBar.innerText = "EYE: PROCESSING REALITY...";
+        canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        Tesseract.recognize(canvas.toDataURL(), 'eng').then(r => {
+            mainBuffer.value += "\n\n[EYE SCAN]: " + r.data.text;
+            statusBar.innerText = "DECRYPTION COMPLETE.";
+        });
+    };
+
+    /* --- PDF SEQUENTIAL ENGINE --- */
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-    const dropContainer = document.getElementById('drop-container');
-    const dropZone = document.getElementById('drop-zone');
-    const textInput = document.getElementById('text-input');
-    const statusIndicator = document.getElementById('status-indicator');
-
-    dropContainer.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('active'); });
-    dropContainer.addEventListener('dragleave', () => { dropZone.classList.remove('active'); });
-
-    dropContainer.addEventListener('drop', async (e) => {
-        e.preventDefault(); dropZone.classList.remove('active');
-        const file = e.dataTransfer.files[0];
-        if (file && file.type === "application/pdf") {
-            statusIndicator.innerText = "SYS.STATUS: DECRYPTING PDF...";
+    let doc = null, pg = 1;
+    document.getElementById('pdf-file').onchange = async function(e) {
+        const file = e.target.files[0];
+        if (file) {
             const reader = new FileReader();
             reader.onload = async function() {
-                const pdf = await pdfjsLib.getDocument(new Uint8Array(this.result)).promise;
-                let extractedText = "";
-                // UPGRADED TO 50 PAGES
-                for (let i = 1; i <= Math.min(pdf.numPages, 50); i++) {
-                    const page = await pdf.getPage(i);
-                    const content = await page.getTextContent();
-                    extractedText += content.items.map(item => item.str).join(' ') + "\n\n";
-                }
-                textInput.value = extractedText;
-                statusIndicator.innerText = "SYS.STATUS: PDF DATA EXTRACTED.";
+                doc = await pdfjsLib.getDocument(new Uint8Array(this.result)).promise;
+                pg = 1; render();
             };
             reader.readAsArrayBuffer(file);
         }
-    });
-
-    // --- RAINBOW SPECTRUM OVERRIDE ENGINE ---
-    const colorSelect = document.getElementById('color-select');
-    const root = document.documentElement;
-
-    function applyOptics(hex) {
-        let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
-        root.style.setProperty('--primary', hex);
-        root.style.setProperty('--cb', `rgba(${r}, ${g}, ${b}, 0.15)`); /* THE TRANSPARENT HUD BACKGROUND */
-        root.style.setProperty('--border', `rgba(${r}, ${g}, ${b}, 0.3)`);
-        root.style.setProperty('--accent', `rgba(${r}, ${g}, ${b}, 0.6)`);
-        root.style.setProperty('--scanline', `rgba(${r}, ${g}, ${b}, 0.1)`);
-        colorSelect.style.color = hex; colorSelect.style.borderColor = hex;
-        updateAvatar(); 
-    }
-    colorSelect.addEventListener('change', (e) => applyOptics(e.target.value));
-
-    // --- AVATAR ENGINE ---
-    const avatars = {
-        ghost: `<svg viewBox="0 0 100 100"><path d="M 20 90 L 20 50 Q 50 0 80 50 L 80 90 Z" fill="none" stroke="currentColor" stroke-width="4"/><line x1="35" y1="55" x2="65" y2="55" stroke="currentColor" stroke-width="4"/><line x1="50" y1="55" x2="50" y2="75" stroke="currentColor" stroke-width="4"/></svg>`,
-        reaper: `<svg viewBox="0 0 100 100"><polygon points="20,20 80,20 70,60 60,90 40,90 30,60" fill="none" stroke="currentColor" stroke-width="4"/><rect x="35" y="40" width="10" height="10" fill="currentColor"/><rect x="55" y="40" width="10" height="10" fill="currentColor"/><line x1="40" y1="75" x2="60" y2="75" stroke="currentColor" stroke-width="3"/></svg>`,
-        machine: `<svg viewBox="0 0 100 100" style="color: var(--danger);"><circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="4"/><circle cx="50" cy="50" r="15" fill="currentColor"/><line x1="50" y1="10" x2="50" y2="30" stroke="currentColor" stroke-width="4"/><line x1="50" y1="70" x2="50" y2="90" stroke="currentColor" stroke-width="4"/></svg>`
     };
-    const avatarDisplay = document.getElementById('avatar-display'), avatarSelect = document.getElementById('avatar-select');
-    function updateAvatar() {
-        const selected = avatarSelect.value; avatarDisplay.innerHTML = avatars[selected];
-        if (selected === 'machine') { avatarDisplay.style.borderColor = 'var(--danger)'; avatarDisplay.style.boxShadow = '0 0 15px var(--danger)'; }
-        else { avatarDisplay.style.borderColor = 'var(--primary)'; avatarDisplay.style.boxShadow = '0 0 15px var(--scanline)'; }
+    async function render() {
+        const p = await doc.getPage(pg);
+        const c = await p.getTextContent();
+        mainBuffer.value = c.items.map(i => i.str).join(' ');
+        document.getElementById('pg-status-bar').innerText = "PAGE: " + pg + " / " + doc.numPages;
+        document.getElementById('prev-pg').disabled = (pg <= 1);
+        document.getElementById('next-pg').disabled = (pg >= doc.numPages);
     }
-    avatarSelect.addEventListener('change', updateAvatar); updateAvatar(); 
+    document.getElementById('next-pg').onclick = function() { if(pg < doc.numPages) { pg++; render(); } };
+    document.getElementById('prev-pg').onclick = function() { if(pg > 1) { pg--; render(); } };
 
-    // --- NATIVE SPEECH & AMBIENT ENGINE ---
-    const synth = window.speechSynthesis, voiceSelect = document.getElementById('voice-select');
-    const rateInput = document.getElementById('rate'), pitchInput = document.getElementById('pitch');
-    const ambientPlayer = document.getElementById('ambient-player'), ambientSelect = document.getElementById('ambient-select'), ambientVolume = document.getElementById('ambient-volume');
-
+    /* --- AUDIO SYNTHESIS ENGINE --- */
     let voices = [];
-    function populateVoiceList() {
-        voices = synth.getVoices(); voiceSelect.innerHTML = '';
-        voices.forEach((voice) => {
-            const option = document.createElement('option');
-            option.textContent = `${voice.name} (${voice.lang})`;
-            option.setAttribute('data-name', voice.name);
-            option.setAttribute('data-lang', voice.lang);
-            voiceSelect.appendChild(option);
-        });
+    function fetchVoices() {
+        voices = speech.getVoices();
+        const drop = document.getElementById('voice-dropdown'); drop.innerHTML = '';
+        voices.forEach(v => { let o = document.createElement('option'); o.textContent = v.name; o.setAttribute('data-name', v.name); drop.appendChild(o); });
     }
-    populateVoiceList(); if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoiceList;
+    fetchVoices(); if (speech.onvoiceschanged !== undefined) speech.onvoiceschanged = fetchVoices;
 
-    ambientVolume.addEventListener('input', () => { ambientPlayer.volume = ambientVolume.value; });
-
-    document.getElementById('custom-audio').addEventListener('change', function(e) {
-        if (e.target.files[0]) {
-            ambientPlayer.src = URL.createObjectURL(e.target.files[0]);
-            document.getElementById('custom-option').style.display = 'block';
-            ambientSelect.value = "custom";
+    document.getElementById('master-execute').onclick = function() {
+        speech.cancel();
+        const ut = new SpeechSynthesisUtterance(mainBuffer.value);
+        ut.voice = voices.find(v => v.name === document.getElementById('voice-dropdown').selectedOptions[0].getAttribute('data-name'));
+        ut.rate = document.getElementById('rate-slider').value;
+        ut.pitch = document.getElementById('pitch-slider').value;
+        ut.volume = vVol.value;
+        if (document.getElementById('ambient-dropdown').value !== "none") {
+            player.src = document.getElementById('ambient-dropdown').value;
+            player.volume = aVol.value; player.play();
         }
-    });
+        ut.onend = () => { player.pause(); statusBar.innerText = "STATUS: STANDBY."; };
+        speech.speak(ut); statusBar.innerText = "TRANSMITTING...";
+    };
+    document.getElementById('master-kill').onclick = function() { speech.cancel(); player.pause(); statusBar.innerText = "STATUS: KILLED."; };
 
-    // --- LINGUISTIC UPLINK ---
-    document.getElementById('btn-translate').addEventListener('click', async () => {
-        const text = textInput.value.trim();
-        if (!text) return;
-        statusIndicator.innerText = "SYS.STATUS: UPLINKING...";
-        try {
-            const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${document.getElementById('translate-lang').value}`);
-            const data = await res.json();
-            textInput.value = data.responseData.translatedText;
-            statusIndicator.innerText = "SYS.STATUS: DECRYPTED.";
-        } catch (e) { statusIndicator.innerText = "SYS.STATUS: UPLINK FAILED."; }
-    });
-
-    // --- MASTER CONTROLS ---
-    function masterPlay() {
-        if (synth.speaking && !synth.paused) return;
-        if (synth.paused) { synth.resume(); if (ambientSelect.value !== "none") ambientPlayer.play(); return; }
-
-        if (textInput.value !== '') {
-            const utterance = new SpeechSynthesisUtterance(textInput.value);
-            utterance.voice = voices.find(v => v.name === voiceSelect.selectedOptions[0].getAttribute('data-name'));
-            utterance.pitch = pitchInput.value; utterance.rate = rateInput.value;
-
-            if (ambientSelect.value !== "none") {
-                if (ambientSelect.value !== "custom") ambientPlayer.src = ambientSelect.value;
-                ambientPlayer.play();
-            }
-
-            utterance.onstart = () => { statusIndicator.innerText = "SYS.STATUS: TRANSMITTING..."; };
-            utterance.onend = () => masterStop();
-            synth.speak(utterance);
-        }
-    }
-
-    function masterStop() { synth.cancel(); ambientPlayer.pause(); ambientPlayer.currentTime = 0; statusIndicator.innerText = "SYS.STATUS: READY."; }
-
-    document.getElementById('btn-speak').addEventListener('click', masterPlay);
-    document.getElementById('btn-pause').addEventListener('click', () => { synth.pause(); ambientPlayer.pause(); statusIndicator.innerText = "HALTED"; });
-    document.getElementById('btn-stop').addEventListener('click', masterStop);
+    /* --- OPTICS --- */
+    document.getElementById('color-select').onchange = function(e) {
+        const hex = e.target.value;
+        const r = parseInt(hex.slice(1,3), 16), g = parseInt(hex.slice(3,5), 16), b = parseInt(hex.slice(5,7), 16);
+        document.documentElement.style.setProperty('--primary', hex);
+        document.documentElement.style.setProperty('--border', `rgba(${r},${g},${b},0.3)`);
+        document.documentElement.style.setProperty('--scanline', `rgba(${r},${g},${b},0.1)`);
+        statusBar.innerText = "OPTICS UPDATED.";
+    };
 </script>
 </body>
 </html>
