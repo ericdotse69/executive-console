@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vault 69 // DEEP STORAGE</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #020202;
+            --text: #ff003c; /* Vaults use Red / Danger colors */
+            --terminal: #00ff41;
+            --border: #ff003c55;
+            --glass: rgba(255, 0, 60, 0.05);
+        }
+
+        * { box-sizing: border-box; font-family: 'JetBrains Mono', monospace; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: radial-gradient(circle at center, #1a0005 0%, #000 100%);
+        }
+
+        /* THE AIRLOCK (LOGIN) */
+        #airlock {
+            text-align: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .sys-title {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 3rem;
+            letter-spacing: 10px;
+            text-shadow: 0 0 20px var(--text);
+            margin-bottom: 10px;
+        }
+
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+
+        input[type="password"] {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--text);
+            color: var(--text);
+            font-size: 1.5rem;
+            text-align: center;
+            outline: none;
+            width: 250px;
+            letter-spacing: 5px;
+            margin-top: 20px;
+        }
+
+        /* THE VAULT (INNER SANCTUM) */
+        #vault-core {
+            display: none; /* Hidden by default */
+            width: 100%;
+            max-width: 800px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(255, 0, 60, 0.2);
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .vault-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            background: rgba(0,0,0,0.8);
+            color: var(--terminal);
+            border: 1px solid var(--border);
+            padding: 15px;
+            font-size: 1rem;
+            outline: none;
+            resize: none;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--text);
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: var(--text);
+            color: #000;
+            box-shadow: 0 0 15px var(--text);
+        }
+
+        #status { font-size: 0.7rem; color: var(--terminal); margin-top: 10px; text-align: right; }
+    </style>
+</head>
+<body>
+
+    <div id="airlock">
+        <h1 class="sys-title">VAULT 69</h1>
+        <p>RESTRICTED ACCESS // ENTER PASSCODE</p>
+        <input type="password" id="passcode" autofocus autocomplete="off">
+        <p style="font-size: 0.7rem; color: #555; margin-top: 20px;">> AWAITING INPUT<span class="blink">_</span></p>
+    </div>
+
+    <div id="vault-core">
+        <div class="vault-header">
+            <span style="font-weight: bold; letter-spacing: 3px;">SECURE NODE // ENCRYPTED MEMORY</span>
+            <span style="font-size: 0.7rem; cursor: pointer;" id="btn-lock">[ LOCK VAULT ]</span>
+        </div>
+        
+        <textarea id="secret-data" placeholder="> INJECT CLASSIFIED DATA HERE..."></textarea>
+        
+        <div class="controls">
+            <button id="btn-encrypt">SCRAMBLE (ENCRYPT)</button>
+            <button id="btn-decrypt">DECODE (DECRYPT)</button>
+            <button id="btn-clear" style="border-color: #555; color: #555;">PURGE DATA</button>
+        </div>
+        
+        <div id="status">SYS.STATUS: VAULT OPEN.</div>
+    </div>
+
+    <script>
+        // --- AIRLOCK SECURITY ---
+        const MASTER_PASS = "6969"; // Change your password here
+        const airlock = document.getElementById('airlock');
+        const vaultCore = document.getElementById('vault-core');
+        const passInput = document.getElementById('passcode');
+        const secretData = document.getElementById('secret-data');
+        const statusLog = document.getElementById('status');
+
+        passInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                if (passInput.value === MASTER_PASS) {
+                    // Access Granted
+                    airlock.style.opacity = '0';
+                    setTimeout(() => {
+                        airlock.style.display = 'none';
+                        vaultCore.style.display = 'block';
+                        setTimeout(() => vaultCore.style.opacity = '1', 50);
+                        loadGhostData();
+                    }, 500);
+                } else {
+                    // Access Denied
+                    passInput.value = '';
+                    airlock.style.transform = 'translateX(-10px)';
+                    setTimeout(() => airlock.style.transform = 'translateX(10px)', 100);
+                    setTimeout(() => airlock.style.transform = 'translateX(0)', 200);
+                }
+            }
+        });
+
+        document.getElementById('btn-lock').addEventListener('click', () => {
+            vaultCore.style.opacity = '0';
+            setTimeout(() => {
+                vaultCore.style.display = 'none';
+                airlock.style.display = 'block';
+                setTimeout(() => airlock.style.opacity = '1', 50);
+                passInput.value = '';
+            }, 500);
+        });
+
+        // --- GHOST STORAGE (LOCAL MEMORY) ---
+        function loadGhostData() {
+            const saved = localStorage.getItem('vault69_data');
+            if(saved) {
+                secretData.value = saved;
+                statusLog.innerText = "SYS.STATUS: GHOST MEMORY RESTORED.";
+            }
+        }
+
+        secretData.addEventListener('input', () => {
+            localStorage.setItem('vault69_data', secretData.value);
+            statusLog.innerText = "SYS.STATUS: DATA AUTO-SAVED.";
+        });
+
+        document.getElementById('btn-clear').addEventListener('click', () => {
+            if(confirm("WARNING: Are you sure you want to permanently purge this data?")) {
+                secretData.value = '';
+                localStorage.removeItem('vault69_data');
+                statusLog.innerText = "SYS.STATUS: VAULT PURGED.";
+            }
+        });
+
+        // --- CRYPTOGRAPHY ENGINE (BASE64) ---
+        document.getElementById('btn-encrypt').addEventListener('click', () => {
+            try {
+                secretData.value = btoa(unescape(encodeURIComponent(secretData.value)));
+                localStorage.setItem('vault69_data', secretData.value);
+                statusLog.innerText = "SYS.STATUS: DATA SCRAMBLED.";
+            } catch (e) { statusLog.innerText = "SYS.STATUS: ENCRYPTION FAILED."; }
+        });
+
+        document.getElementById('btn-decrypt').addEventListener('click', () => {
+            try {
+                secretData.value = decodeURIComponent(escape(atob(secretData.value)));
+                localStorage.setItem('vault69_data', secretData.value);
+                statusLog.innerText = "SYS.STATUS: DATA DECODED.";
+            } catch (e) { statusLog.innerText = "SYS.STATUS: DECRYPTION FAILED (NOT SCRAMBLED)."; }
+        });
+    </script>
+</body>
+</html>

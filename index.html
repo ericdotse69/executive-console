@@ -7,7 +7,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00ff41">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <style>
         :root { 
             --bg: #050505; 
@@ -486,5 +488,19 @@
     ambientPlayer.volume = document.getElementById('ambient-volume').value;
 
 </script>
+<script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                .then(registration => {
+                    console.log('SYS.STATUS: PWA SERVICE WORKER ACTIVE', registration.scope);
+                })
+                .catch(err => {
+                    console.log('SYS.STATUS: PWA REGISTRATION FAILED', err);
+                });
+            });
+        }
+    </script>
+
 </body>
 </html>
