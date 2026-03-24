@@ -10,7 +10,6 @@
     
     <style>
         :root { 
-            /* DEFAULT: TOXIC GREEN CORE */
             --bg: #050505; 
             --glass-bg: rgba(0, 255, 65, 0.05); 
             --primary: #00ff41; 
@@ -26,63 +25,41 @@
         * { box-sizing: border-box; font-family: 'JetBrains Mono', monospace; }
         
         body { 
-            background-color: var(--bg); 
-            color: var(--text); 
-            padding: 20px; 
-            display: flex; 
-            justify-content: center; 
+            background-color: var(--bg); color: var(--text); padding: 20px; 
+            display: flex; justify-content: center; align-items: flex-start;
             background-image: linear-gradient(var(--scanline) 1px, transparent 1px);
-            background-size: 100% 3px;
-            transition: all 0.4s ease;
+            background-size: 100% 3px; min-height: 100vh; margin: 0; transition: all 0.4s ease;
         }
 
-        /* GLASSMORPHISM CORE */
+        /* --- THE AIRLOCK (LOGIN) --- */
+        #airlock {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #020202; z-index: 9999; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; transition: opacity 0.8s ease;
+        }
+        .sys-title { font-family: 'Share Tech Mono', monospace; font-size: 3rem; letter-spacing: 10px; color: var(--danger); text-shadow: 0 0 20px var(--danger); margin-bottom: 10px; text-transform: uppercase; }
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+        #passcode { background: transparent; border: none; border-bottom: 2px solid var(--danger); color: var(--danger); font-size: 1.5rem; text-align: center; outline: none; width: 250px; letter-spacing: 5px; margin-top: 20px; padding-bottom: 5px; }
+        
+        /* --- MAIN CONSOLE --- */
         .container { 
-            width: 100%; 
-            max-width: 800px; 
-            background: var(--glass-bg); 
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            padding: 30px; 
-            border: 1px solid var(--border); 
-            border-radius: 12px;
+            width: 100%; max-width: 800px; background: var(--glass-bg); 
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            padding: 30px; border: 1px solid var(--border); border-radius: 12px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8), inset 0 0 20px var(--scanline); 
-            transition: all 0.4s ease;
+            transition: all 0.4s ease; display: none; opacity: 0; /* Hidden by default */
         }
 
         .header-container { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px dashed var(--border); padding-bottom: 15px; margin-bottom: 20px; }
-        
-        .hacker-title { 
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 2.2rem;
-            color: var(--primary); 
-            text-transform: uppercase; 
-            letter-spacing: 8px; 
-            margin: 0; 
-            text-shadow: 2px 2px var(--scanline), 0 0 15px var(--primary);
-            transition: 0.4s ease;
-        }
-
-        .badge { font-size: 0.65rem; background: var(--danger); color: #000; padding: 4px 8px; font-weight: bold; margin-top: 5px; display: inline-block; border-radius: 3px; }
+        .hacker-title { font-family: 'Share Tech Mono', monospace; font-size: 2.2rem; color: var(--primary); text-transform: uppercase; letter-spacing: 8px; margin: 0; text-shadow: 2px 2px var(--scanline), 0 0 15px var(--primary); transition: 0.4s ease; }
+        .badge { font-size: 0.65rem; background: var(--danger); color: #000; padding: 4px 8px; font-weight: bold; margin-top: 5px; display: inline-block; border-radius: 3px; cursor: pointer; transition: 0.3s; }
+        .badge:hover { background: #fff; box-shadow: 0 0 10px #fff; }
 
         .avatar-wrapper { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; position: relative; z-index: 10; }
-        
-        .ever-burning-flame {
-            position: absolute; width: 90px; height: 90px; top: -12px; right: -12px; z-index: 0; 
-            background: radial-gradient(circle at 50% 80%, var(--fire-core) 0%, var(--fire-edge) 40%, transparent 70%);
-            border-radius: 45%; animation: blaze 0.8s infinite alternate ease-in-out; filter: blur(8px); opacity: 0.9; pointer-events: none;
-        }
-        
-        @keyframes blaze {
-            0% { transform: scale(1) translateY(0) rotate(-2deg); opacity: 0.8; filter: blur(8px); }
-            100% { transform: scale(1.1) translateY(-8px) rotate(2deg); opacity: 1; filter: blur(12px); }
-        }
-
-        .avatar-box { 
-            position: relative; z-index: 2; width: 65px; height: 65px; border: 1px solid var(--primary); 
-            background: rgba(0,0,0,0.85); color: var(--primary); display: flex; align-items: center; justify-content: center; 
-            box-shadow: 0 0 15px var(--scanline); transition: 0.4s ease; border-radius: 8px; backdrop-filter: blur(5px); 
-        }
+        .ever-burning-flame { position: absolute; width: 90px; height: 90px; top: -12px; right: -12px; z-index: 0; background: radial-gradient(circle at 50% 80%, var(--fire-core) 0%, var(--fire-edge) 40%, transparent 70%); border-radius: 45%; animation: blaze 0.8s infinite alternate ease-in-out; filter: blur(8px); opacity: 0.9; pointer-events: none; }
+        @keyframes blaze { 0% { transform: scale(1) translateY(0) rotate(-2deg); opacity: 0.8; filter: blur(8px); } 100% { transform: scale(1.1) translateY(-8px) rotate(2deg); opacity: 1; filter: blur(12px); } }
+        .avatar-box { position: relative; z-index: 2; width: 65px; height: 65px; border: 1px solid var(--primary); background: rgba(0,0,0,0.85); color: var(--primary); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px var(--scanline); transition: 0.4s ease; border-radius: 8px; backdrop-filter: blur(5px); }
         .avatar-box svg { width: 45px; height: 45px; }
 
         .panel { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 15px; position: relative; transition: 0.4s ease; backdrop-filter: blur(8px); }
@@ -111,22 +88,30 @@
 
         #drop-zone { border: 2px dashed var(--border); padding: 20px; text-align: center; font-size: 0.75rem; cursor: pointer; margin-bottom: 10px; transition: 0.3s; color: var(--accent); border-radius: 6px; background: rgba(0,0,0,0.3); }
         #drop-zone:hover { border-color: var(--primary); color: var(--primary); background: var(--scanline); }
-
         #status-indicator { font-size: 0.75rem; color: var(--accent); text-align: right; margin-top: 15px; font-weight: bold; letter-spacing: 1px; transition: 0.4s ease; }
-        
         .checkbox-wrapper { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
         .checkbox-wrapper input { width: auto; cursor: pointer; }
         .checkbox-wrapper label { margin: 0; cursor: pointer; font-size: 0.6rem; }
 
+        /* Vault Specific Overrides */
+        .vault-btn { border-color: var(--danger); color: var(--danger); padding: 12px; font-size: 0.7rem; }
+        .vault-btn:hover { background: var(--danger); color: #000; box-shadow: 0 0 15px var(--danger); }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div id="airlock">
+    <h1 class="sys-title">ZONE 69</h1>
+    <p style="color: var(--danger); letter-spacing: 2px;">RESTRICTED ACCESS // ENTER PASSCODE</p>
+    <input type="password" id="passcode" autofocus autocomplete="off">
+    <p style="font-size: 0.7rem; color: #555; margin-top: 20px;">> AWAITING INPUT<span class="blink">_</span></p>
+</div>
+
+<div class="container" id="main-console">
     <div class="header-container">
         <div>
             <h2 class="hacker-title">Zone 69</h2>
-            <span class="badge">SYSTEM EXECUTION PRIVILEGES</span>
+            <span class="badge" id="btn-lock" title="Click to Secure App">[ LOCK SYSTEM ]</span>
             <div style="margin-top: 12px;">
                 <select id="theme-select">
                     <option value="DEFAULT">>> OPTICS: GLASS GREEN (CORE)</option>
@@ -217,14 +202,14 @@
     <div class="panel">
         <span class="panel-title">AUDIOBOOK_ENV // RHYTHMS & GENRES</span>
         <div class="controls">
-           <div>
+            <div>
                 <label>GENRE_STREAMS</label>
                 <select id="ambient-select">
                     <option value="none">NULL (SILENCE)</option>
                     <option value="https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3">WOODS (NATURE)</option>
-                    <option value="https://cdn.pixabay.com/audio/2023/05/08/audio_65191c9b68.mp3">DANCEHALL BEAT</option>
-                    <option value="https://cdn.pixabay.com/audio/2022/05/27/audio_180873747b.mp3">COOLS (LO-FI STUDY)</option>
-                    <option value="https://cdn.pixabay.com/audio/2022/10/25/audio_24867dd116.mp3">CYBERPUNK INDUSTRIAL</option>
+                    <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">ELECTRONIC BEAT</option>
+                    <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3">COOLS (CHILL WAVE)</option>
+                    <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3">CYBERPUNK SYNTH</option>
                 </select>
             </div>
             <div>
@@ -239,21 +224,101 @@
         </div>
     </div>
 
+    <div class="panel" style="border-color: var(--danger); background: rgba(255,0,60,0.05);">
+        <span class="panel-title" style="color: var(--danger);">VAULT 69 // DEEP STORAGE (GHOST MEMORY)</span>
+        <div class="text-layer-wrapper" style="height: 120px;">
+            <textarea id="vault-data" placeholder="> SECURE NOTES AUTO-SAVE HERE. WILL SURVIVE BROWSER REBOOT." style="border-color: var(--danger); color: var(--danger);"></textarea>
+        </div>
+        <div class="controls">
+            <button id="btn-encrypt" class="vault-btn">SCRAMBLE (BASE64)</button>
+            <button id="btn-decrypt" class="vault-btn">DECODE</button>
+        </div>
+    </div>
+
     <div class="btn-group">
         <button class="btn-play" id="btn-speak">EXECUTE TRANSMISSION</button>
         <button class="btn-stop" id="btn-stop">KILL PROCESS</button>
     </div>
 
-    <div id="status-indicator">SYS.STATUS: READY</div>
+    <div id="status-indicator">SYS.STATUS: LOCKED</div>
 </div>
 
 <audio id="ambient-player" loop crossorigin="anonymous"></audio>
 
 <script>
+    // --- AIRLOCK SECURITY LOGIC ---
+    const MASTER_PASS = "6969";
+    const airlock = document.getElementById('airlock');
+    const mainConsole = document.getElementById('main-console');
+    const passInput = document.getElementById('passcode');
+    const statusLog = document.getElementById('status-indicator');
+
+    passInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            if (passInput.value === MASTER_PASS) {
+                // Access Granted
+                airlock.style.opacity = '0';
+                setTimeout(() => {
+                    airlock.style.display = 'none';
+                    mainConsole.style.display = 'block';
+                    setTimeout(() => mainConsole.style.opacity = '1', 50);
+                    statusLog.innerText = "SYS.STATUS: SYSTEM UNLOCKED.";
+                    loadVaultData(); // Load the ghost memory once inside
+                }, 800);
+            } else {
+                // Access Denied (Shake effect)
+                passInput.value = '';
+                airlock.style.transform = 'translateX(-15px)';
+                setTimeout(() => airlock.style.transform = 'translateX(15px)', 100);
+                setTimeout(() => airlock.style.transform = 'translateX(0)', 200);
+            }
+        }
+    });
+
+    // Lock Button Logic
+    document.getElementById('btn-lock').addEventListener('click', () => {
+        mainConsole.style.opacity = '0';
+        setTimeout(() => {
+            mainConsole.style.display = 'none';
+            airlock.style.display = 'flex';
+            setTimeout(() => airlock.style.opacity = '1', 50);
+            passInput.value = '';
+            statusLog.innerText = "SYS.STATUS: LOCKED";
+        }, 500);
+    });
+
+    // --- VAULT 69 DEEP STORAGE LOGIC ---
+    const vaultData = document.getElementById('vault-data');
+    
+    function loadVaultData() {
+        const saved = localStorage.getItem('zone69_vault');
+        if(saved) { vaultData.value = saved; }
+    }
+
+    vaultData.addEventListener('input', () => {
+        localStorage.setItem('zone69_vault', vaultData.value);
+    });
+
+    document.getElementById('btn-encrypt').addEventListener('click', () => {
+        try {
+            vaultData.value = btoa(unescape(encodeURIComponent(vaultData.value)));
+            localStorage.setItem('zone69_vault', vaultData.value);
+            statusLog.innerText = "SYS.STATUS: VAULT SCRAMBLED.";
+        } catch (e) { statusLog.innerText = "SYS.STATUS: ENCRYPTION ERROR."; }
+    });
+
+    document.getElementById('btn-decrypt').addEventListener('click', () => {
+        try {
+            vaultData.value = decodeURIComponent(escape(atob(vaultData.value)));
+            localStorage.setItem('zone69_vault', vaultData.value);
+            statusLog.innerText = "SYS.STATUS: VAULT DECODED.";
+        } catch (e) { statusLog.innerText = "SYS.STATUS: DECODE ERROR (NOT BASE64)."; }
+    });
+
+    // --- EVERYTHING ELSE (CONSOLE CORE) ---
     const synth = window.speechSynthesis;
     const textInput = document.getElementById('text-input');
     const highlightLayer = document.getElementById('highlight-layer');
-    const status = document.getElementById('status-indicator');
     const voiceSelect = document.getElementById('voice-select');
     const ambientPlayer = document.getElementById('ambient-player');
     const avatarDisplay = document.getElementById('avatar-display');
@@ -262,11 +327,11 @@
     const btnCaptureCam = document.getElementById('btn-capture-cam');
     let streamRef = null;
 
-    // --- PDF ENGINE ---
+    // PDF ENGINE
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
     async function handlePDF(file) {
         if(!file) return;
-        status.innerText = "SYS.STATUS: DECRYPTING PDF...";
+        statusLog.innerText = "SYS.STATUS: DECRYPTING PDF...";
         const reader = new FileReader();
         reader.onload = async function() {
             try {
@@ -278,14 +343,14 @@
                     text += content.items.map(s => s.str).join(' ') + "\n";
                 }
                 textInput.value = text;
-                status.innerText = "SYS.STATUS: DATA INJECTED (" + pdf.numPages + " PGS)";
-            } catch (e) { status.innerText = "SYS.STATUS: ERROR DECRYPTING."; }
+                statusLog.innerText = "SYS.STATUS: DATA INJECTED (" + pdf.numPages + " PGS)";
+            } catch (e) { statusLog.innerText = "SYS.STATUS: ERROR DECRYPTING."; }
         };
         reader.readAsArrayBuffer(file);
     }
     document.getElementById('pdf-upload').addEventListener('change', (e) => handlePDF(e.target.files[0]));
 
-    // --- CAM EYE (VISION OCR) ---
+    // CAM EYE (OCR)
     btnStartCam.addEventListener('click', async () => {
         try {
             streamRef = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
@@ -293,226 +358,131 @@
             videoFeed.style.display = 'block';
             btnStartCam.style.display = 'none';
             btnCaptureCam.style.display = 'block';
-            status.innerText = "SYS.STATUS: OPTICS ONLINE.";
-        } catch (err) {
-            alert("Camera access denied. Ensure HTTPS is active.");
-            status.innerText = "SYS.STATUS: OPTICS FAILED.";
-        }
+            statusLog.innerText = "SYS.STATUS: OPTICS ONLINE.";
+        } catch (err) { alert("Camera access denied."); }
     });
-
     btnCaptureCam.addEventListener('click', async () => {
-        status.innerText = "SYS.STATUS: RUNNING OCR ANALYSIS...";
+        statusLog.innerText = "SYS.STATUS: RUNNING OCR ANALYSIS...";
         const canvas = document.getElementById('canvas-capture');
-        canvas.width = videoFeed.videoWidth;
-        canvas.height = videoFeed.videoHeight;
+        canvas.width = videoFeed.videoWidth; canvas.height = videoFeed.videoHeight;
         canvas.getContext('2d').drawImage(videoFeed, 0, 0);
-        
         try {
             const result = await Tesseract.recognize(canvas, 'eng');
             textInput.value += "\n" + result.data.text;
-            status.innerText = "SYS.STATUS: TEXT EXTRACTED.";
+            statusLog.innerText = "SYS.STATUS: TEXT EXTRACTED.";
             streamRef.getTracks().forEach(track => track.stop());
-            videoFeed.style.display = 'none';
-            btnCaptureCam.style.display = 'none';
-            btnStartCam.style.display = 'block';
-        } catch(e) {
-            status.innerText = "SYS.STATUS: OCR FAILED.";
-        }
+            videoFeed.style.display = 'none'; btnCaptureCam.style.display = 'none'; btnStartCam.style.display = 'block';
+        } catch(e) { statusLog.innerText = "SYS.STATUS: OCR FAILED."; }
     });
 
-    // --- SMART VOICE FILTER (PREMIUM HUNTER) ---
+    // SMART VOICE FILTER
     function populateVoices() {
         let voices = synth.getVoices();
-        const premiumTags = ['aria', 'samantha', 'daniel', 'karen', 'guy', 'siri', 'natural', 'premium', 'google us', 'online'];
+        const tags = ['aria', 'samantha', 'daniel', 'karen', 'guy', 'siri', 'natural', 'premium', 'google us', 'online'];
         voices.sort((a, b) => {
-            let aPrem = premiumTags.some(tag => a.name.toLowerCase().includes(tag));
-            let bPrem = premiumTags.some(tag => b.name.toLowerCase().includes(tag));
-            if(aPrem && !bPrem) return -1;
-            if(!aPrem && bPrem) return 1;
-            return 0;
+            let aPrem = tags.some(t => a.name.toLowerCase().includes(t));
+            let bPrem = tags.some(t => b.name.toLowerCase().includes(t));
+            if(aPrem && !bPrem) return -1; if(!aPrem && bPrem) return 1; return 0;
         });
-
-        voiceSelect.innerHTML = voices.map(v => {
-            let isPremium = premiumTags.some(tag => v.name.toLowerCase().includes(tag)) ? "🔥 [PREMIUM] " : "";
-            return `<option value="${v.name}">${isPremium}${v.name} (${v.lang})</option>`;
-        }).join('');
+        voiceSelect.innerHTML = voices.map(v => `<option value="${v.name}">${tags.some(t => v.name.toLowerCase().includes(t)) ? "🔥 [PREMIUM] " : ""}${v.name} (${v.lang})</option>`).join('');
     }
     if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoices;
     setTimeout(populateVoices, 500);
 
-    // --- GLASSMORPHISM THEME ENGINE & FLAME CONTROL ---
+    // GLASSMORPHISM THEME
     document.getElementById('theme-select').addEventListener('change', (e) => {
-        const r = document.documentElement;
-        const val = e.target.value;
+        const r = document.documentElement; const val = e.target.value;
         if(val === "GERMAN") {
-            r.style.setProperty('--primary', '#ffcc00'); r.style.setProperty('--bg', '#111');      
-            r.style.setProperty('--glass-bg', 'rgba(255, 204, 0, 0.05)'); r.style.setProperty('--border', 'rgba(255, 0, 0, 0.5)'); 
-            r.style.setProperty('--accent', '#ff3300'); r.style.setProperty('--scanline', 'rgba(255, 204, 0, 0.05)');
-            r.style.setProperty('--fire-core', '#ffea00'); r.style.setProperty('--fire-edge', '#ff0000');
+            r.style.setProperty('--primary', '#ffcc00'); r.style.setProperty('--bg', '#111'); r.style.setProperty('--glass-bg', 'rgba(255, 204, 0, 0.05)'); r.style.setProperty('--border', 'rgba(255, 0, 0, 0.5)'); r.style.setProperty('--accent', '#ff3300'); r.style.setProperty('--scanline', 'rgba(255, 204, 0, 0.05)'); r.style.setProperty('--fire-core', '#ffea00'); r.style.setProperty('--fire-edge', '#ff0000');
         } else if(val === "HACKER") {
-            r.style.setProperty('--primary', '#ffffff'); r.style.setProperty('--bg', '#020202');      
-            r.style.setProperty('--glass-bg', 'rgba(255, 255, 255, 0.02)'); r.style.setProperty('--border', 'rgba(255, 255, 255, 0.2)');
-            r.style.setProperty('--accent', '#777'); r.style.setProperty('--scanline', 'rgba(255, 255, 255, 0.03)');
-            r.style.setProperty('--fire-core', '#ffffff'); r.style.setProperty('--fire-edge', '#444444');
+            r.style.setProperty('--primary', '#ffffff'); r.style.setProperty('--bg', '#020202'); r.style.setProperty('--glass-bg', 'rgba(255, 255, 255, 0.02)'); r.style.setProperty('--border', 'rgba(255, 255, 255, 0.2)'); r.style.setProperty('--accent', '#777'); r.style.setProperty('--scanline', 'rgba(255, 255, 255, 0.03)'); r.style.setProperty('--fire-core', '#ffffff'); r.style.setProperty('--fire-edge', '#444444');
         } else {
-            r.style.setProperty('--primary', '#00ff41'); r.style.setProperty('--bg', '#050505');
-            r.style.setProperty('--glass-bg', 'rgba(0, 255, 65, 0.05)'); r.style.setProperty('--border', 'rgba(0, 255, 65, 0.3)');
-            r.style.setProperty('--accent', 'rgba(0, 255, 65, 0.6)'); r.style.setProperty('--scanline', 'rgba(0, 255, 65, 0.05)');
-            r.style.setProperty('--fire-core', '#ffea00'); r.style.setProperty('--fire-edge', '#ff3300');
+            r.style.setProperty('--primary', '#00ff41'); r.style.setProperty('--bg', '#050505'); r.style.setProperty('--glass-bg', 'rgba(0, 255, 65, 0.05)'); r.style.setProperty('--border', 'rgba(0, 255, 65, 0.3)'); r.style.setProperty('--accent', 'rgba(0, 255, 65, 0.6)'); r.style.setProperty('--scanline', 'rgba(0, 255, 65, 0.05)'); r.style.setProperty('--fire-core', '#ffea00'); r.style.setProperty('--fire-edge', '#ff3300');
         }
     });
 
-    // --- AVATAR ENGINE ---
+    // AVATAR ENGINE
     const avatars = {
         ghost: `<svg viewBox="0 0 100 100" stroke="currentColor" fill="none"><path d="M20 80V40c0-20 30-30 60 0v40" stroke-width="3"/><circle cx="40" cy="45" r="3" fill="currentColor"/><circle cx="60" cy="45" r="3" fill="currentColor"/><path d="M40 65h20" stroke-width="2"/></svg>`,
         reaper: `<svg viewBox="0 0 100 100" stroke="currentColor" fill="none"><path d="M50 10L15 90h70z" stroke-width="3"/><rect x="42" y="45" width="16" height="8" fill="currentColor"/><path d="M30 70h40" stroke-width="2"/></svg>`,
         machine: `<svg viewBox="0 0 100 100" stroke="#ff003c" fill="none"><circle cx="50" cy="50" r="38" stroke-width="4"/><circle cx="50" cy="50" r="12" fill="#ff003c"/><path d="M50 10v15M50 75v15M10 50h15M75 50h15" stroke-width="3"/></svg>`
     };
     function updateAvatar() { avatarDisplay.innerHTML = avatars[document.getElementById('avatar-select').value]; }
-    document.getElementById('avatar-select').addEventListener('change', updateAvatar);
-    updateAvatar();
+    document.getElementById('avatar-select').addEventListener('change', updateAvatar); updateAvatar();
 
-    // --- TRANSLATION UPLINK (AUTO-CHUNKING) ---
+    // AUTO-CHUNKING TRANSLATION
     document.getElementById('btn-translate').addEventListener('click', async () => {
         const lang = document.getElementById('trans-lang').value;
         const query = textInput.value.trim();
         const btn = document.getElementById('btn-translate');
         if(!query) return;
-        
-        btn.innerText = "PROCESSING...";
-        btn.disabled = true;
-
-        // Auto-Chunking Algorithm (Max 450 chars to avoid 500 limit)
-        const MAX_CHUNK = 450;
-        let chunks = [];
-        let currentIndex = 0;
-
+        btn.innerText = "PROCESSING..."; btn.disabled = true;
+        const MAX_CHUNK = 450; let chunks = []; let currentIndex = 0;
         while (currentIndex < query.length) {
             let chunk = query.substring(currentIndex, currentIndex + MAX_CHUNK);
             if (currentIndex + MAX_CHUNK < query.length) {
-                // Find nearest safe break point to avoid splitting words
                 let splitIndex = Math.max(chunk.lastIndexOf('. '), chunk.lastIndexOf('? '), chunk.lastIndexOf('! '), chunk.lastIndexOf('\n'));
-                if (splitIndex === -1) splitIndex = chunk.lastIndexOf(' ');
-                if (splitIndex <= 0) splitIndex = MAX_CHUNK; // Hard split if no spaces exist
-                
-                chunk = query.substring(currentIndex, currentIndex + splitIndex);
-                currentIndex += splitIndex;
-            } else {
-                currentIndex = query.length;
-            }
+                if (splitIndex === -1) splitIndex = chunk.lastIndexOf(' '); if (splitIndex <= 0) splitIndex = MAX_CHUNK;
+                chunk = query.substring(currentIndex, currentIndex + splitIndex); currentIndex += splitIndex;
+            } else { currentIndex = query.length; }
             chunks.push(chunk.trim());
         }
-
         let translatedText = "";
-        
         for (let i = 0; i < chunks.length; i++) {
             if (!chunks[i]) continue;
-            status.innerText = `SYS.STATUS: UPLINKING... [NODE ${i + 1}/${chunks.length}]`;
-            
+            statusLog.innerText = `SYS.STATUS: UPLINKING... [NODE ${i + 1}/${chunks.length}]`;
             try {
-                // Critical: 1 second delay to prevent API IP ban
                 if (i > 0) await new Promise(r => setTimeout(r, 1000));
-                
                 const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunks[i])}&langpair=auto|${lang}`);
                 const data = await res.json();
-                
-                if(data.responseData && data.responseData.translatedText) {
-                    translatedText += data.responseData.translatedText + " ";
-                } else {
-                    translatedText += "[API ERROR] ";
-                }
-            } catch (e) { 
-                translatedText += "[NETWORK ERROR] "; 
-            }
+                if(data.responseData && data.responseData.translatedText) { translatedText += data.responseData.translatedText + " "; } else { translatedText += "[API ERROR] "; }
+            } catch (e) { translatedText += "[NETWORK ERROR] "; }
         }
-
         textInput.value = translatedText.trim();
-        status.innerText = "SYS.STATUS: DECRYPTION COMPLETE.";
-        btn.innerText = "EXECUTE UPLINK";
-        btn.disabled = false;
+        statusLog.innerText = "SYS.STATUS: DECRYPTION COMPLETE."; btn.innerText = "EXECUTE UPLINK"; btn.disabled = false;
     });
 
-    // --- MASTER CONTROLS & HIGHLIGHTING ---
+    // TRANSMISSION (TTS & HIGHLIGHTING)
     document.getElementById('btn-speak').addEventListener('click', () => {
         synth.cancel();
         const fullText = textInput.value;
         if(!fullText) return;
-
         const utter = new SpeechSynthesisUtterance(fullText);
         utter.voice = synth.getVoices().find(v => v.name === voiceSelect.value);
-        
         utter.volume = document.getElementById('voice-volume').value;
         const amb = document.getElementById('ambient-select').value;
         ambientPlayer.volume = document.getElementById('ambient-volume').value;
         if(amb !== 'none') { ambientPlayer.src = amb; ambientPlayer.play(); }
+        if(document.getElementById('robot-override').checked) { utter.pitch = 0.1; utter.rate = 0.7; } 
+        else { utter.rate = document.getElementById('rate').value; utter.pitch = document.getElementById('pitch').value; }
         
-        if(document.getElementById('robot-override').checked) {
-            utter.pitch = 0.1; utter.rate = 0.7;
-        } else {
-            utter.rate = document.getElementById('rate').value; utter.pitch = document.getElementById('pitch').value;
-        }
-        
-        textInput.style.color = "transparent"; 
-        highlightLayer.style.display = "block"; 
-        highlightLayer.innerText = fullText;
-
+        textInput.style.color = "transparent"; highlightLayer.style.display = "block"; highlightLayer.innerText = fullText;
         utter.onboundary = (e) => {
             if (e.name === 'word') {
-                const before = fullText.substring(0, e.charIndex);
-                const word = fullText.substring(e.charIndex, e.charIndex + e.charLength);
-                const after = fullText.substring(e.charIndex + e.charLength);
+                const before = fullText.substring(0, e.charIndex); const word = fullText.substring(e.charIndex, e.charIndex + e.charLength); const after = fullText.substring(e.charIndex + e.charLength);
                 highlightLayer.innerHTML = before + "<mark id='current-word'>" + word + "</mark>" + after;
-                
                 const markEl = document.getElementById('current-word');
                 if(markEl) { highlightLayer.scrollTop = markEl.offsetTop - (highlightLayer.clientHeight / 2); }
             }
         };
-
-        synth.speak(utter);
-        status.innerText = "SYS.STATUS: TRANSMITTING...";
-        
-        utter.onend = () => { 
-            status.innerText = "SYS.STATUS: READY"; 
-            ambientPlayer.pause(); 
-            textInput.style.color = "var(--text)";
-            highlightLayer.style.display = "none";
-        };
+        synth.speak(utter); statusLog.innerText = "SYS.STATUS: TRANSMITTING...";
+        utter.onend = () => { statusLog.innerText = "SYS.STATUS: READY"; ambientPlayer.pause(); textInput.style.color = "var(--text)"; highlightLayer.style.display = "none"; };
     });
 
-    document.getElementById('btn-stop').addEventListener('click', () => { 
-        synth.cancel(); ambientPlayer.pause(); status.innerText = "SYS.STATUS: KILLED."; 
-        textInput.style.color = "var(--text)"; highlightLayer.style.display = "none";
-    });
+    document.getElementById('btn-stop').addEventListener('click', () => { synth.cancel(); ambientPlayer.pause(); statusLog.innerText = "SYS.STATUS: KILLED."; textInput.style.color = "var(--text)"; highlightLayer.style.display = "none"; });
 
-    // --- EXFILTRATION (.DOC) ---
+    // EXPORT
     document.getElementById('export-text').addEventListener('click', () => {
-        const htmlContent = `
-            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-            <head><meta charset='utf-8'><title>Zone 69 Log</title></head>
-            <body><p>${textInput.value.replace(/\n/g, '<br>')}</p></body>
-            </html>`;
-        const blob = new Blob(['\ufeff', htmlContent], {type: 'application/msword'});
-        const a = document.createElement('a'); 
-        a.href = URL.createObjectURL(blob); 
-        a.download = 'Zone69_Document.doc'; 
-        a.click();
-        status.innerText = "SYS.STATUS: DOCUMENT SAVED.";
+        const htmlContent = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Zone 69 Log</title></head><body><p>${textInput.value.replace(/\n/g, '<br>')}</p></body></html>`;
+        const blob = new Blob(['\ufeff', htmlContent], {type: 'application/msword'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Zone69_Document.doc'; a.click(); statusLog.innerText = "SYS.STATUS: DOCUMENT SAVED.";
     });
 
-    document.getElementById('custom-audio').addEventListener('change', function(e) {
-        if(e.target.files[0]) { 
-            ambientPlayer.src = URL.createObjectURL(e.target.files[0]); 
-            status.innerText = "SYS.STATUS: CUSTOM AUDIO LOADED.";
-        }
-    });
-
+    // UTILS
+    document.getElementById('custom-audio').addEventListener('change', function(e) { if(e.target.files[0]) { ambientPlayer.src = URL.createObjectURL(e.target.files[0]); statusLog.innerText = "SYS.STATUS: CUSTOM AUDIO LOADED."; }});
     document.getElementById('rate').oninput = (e) => document.getElementById('rate-val').innerText = e.target.value;
     document.getElementById('pitch').oninput = (e) => document.getElementById('pitch-val').innerText = e.target.value;
     document.getElementById('voice-volume').oninput = (e) => document.getElementById('voice-vol-val').innerText = Math.round(e.target.value * 100) + "%";
-    document.getElementById('ambient-volume').oninput = (e) => {
-        document.getElementById('ambient-vol-val').innerText = Math.round(e.target.value * 100) + "%";
-        ambientPlayer.volume = e.target.value;
-    };
+    document.getElementById('ambient-volume').oninput = (e) => { document.getElementById('ambient-vol-val').innerText = Math.round(e.target.value * 100) + "%"; ambientPlayer.volume = e.target.value; };
     ambientPlayer.volume = document.getElementById('ambient-volume').value;
 
 </script>
