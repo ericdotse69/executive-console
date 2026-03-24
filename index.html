@@ -65,22 +65,12 @@
 
         .badge { font-size: 0.65rem; background: var(--danger); color: #000; padding: 4px 8px; font-weight: bold; margin-top: 5px; display: inline-block; border-radius: 3px; }
 
-        /* THE EVER-BURNING FLAME & AVATAR FIX */
         .avatar-wrapper { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; position: relative; z-index: 10; }
         
         .ever-burning-flame {
-            position: absolute;
-            width: 90px; 
-            height: 90px; 
-            top: -12px; 
-            right: -12px; 
-            z-index: 0; /* Stays behind the avatar */
+            position: absolute; width: 90px; height: 90px; top: -12px; right: -12px; z-index: 0; 
             background: radial-gradient(circle at 50% 80%, var(--fire-core) 0%, var(--fire-edge) 40%, transparent 70%);
-            border-radius: 45%;
-            animation: blaze 0.8s infinite alternate ease-in-out;
-            filter: blur(8px);
-            opacity: 0.9;
-            pointer-events: none;
+            border-radius: 45%; animation: blaze 0.8s infinite alternate ease-in-out; filter: blur(8px); opacity: 0.9; pointer-events: none;
         }
         
         @keyframes blaze {
@@ -89,29 +79,18 @@
         }
 
         .avatar-box { 
-            position: relative; /* CRITICAL FIX: Forces it above the flame */
-            z-index: 2;         /* CRITICAL FIX */
-            width: 65px; 
-            height: 65px; 
-            border: 1px solid var(--primary); 
-            background: rgba(0,0,0,0.85); /* Darker to contrast flame */
-            color: var(--primary); /* Ensures SVG inherits color */
-            display: flex; align-items: center; justify-content: center; 
-            box-shadow: 0 0 15px var(--scanline); 
-            transition: 0.4s ease; 
-            border-radius: 8px; 
-            backdrop-filter: blur(5px); 
+            position: relative; z-index: 2; width: 65px; height: 65px; border: 1px solid var(--primary); 
+            background: rgba(0,0,0,0.85); color: var(--primary); display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 0 15px var(--scanline); transition: 0.4s ease; border-radius: 8px; backdrop-filter: blur(5px); 
         }
         .avatar-box svg { width: 45px; height: 45px; }
 
-        /* GLASS PANELS */
         .panel { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 15px; position: relative; transition: 0.4s ease; backdrop-filter: blur(8px); }
         .panel-title { font-size: 0.8rem; color: var(--primary); letter-spacing: 2px; margin-bottom: 15px; display: block; font-weight: bold; border-bottom: 1px solid var(--border); padding-bottom: 5px; text-transform: uppercase; transition: 0.4s ease; }
         
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         label { font-size: 0.65rem; color: var(--accent); display: block; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; transition: 0.4s ease; }
         
-        /* TEXT AREA & HIGHLIGHTER LAYER */
         .text-layer-wrapper { position: relative; width: 100%; height: 160px; margin-bottom: 10px; }
         textarea, #highlight-layer { width: 100%; height: 100%; background: rgba(0,0,0,0.5); color: var(--text); border: 1px solid var(--border); padding: 12px; outline: none; resize: none; font-size: 0.9rem; line-height: 1.5; border-radius: 6px; position: absolute; top: 0; left: 0; transition: 0.3s; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; }
         textarea:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--scanline); }
@@ -120,7 +99,6 @@
 
         select, input[type="range"], input[type="file"] { width: 100%; padding: 10px; background: rgba(0,0,0,0.5); color: var(--primary); border: 1px solid var(--border); outline: none; font-size: 0.8rem; cursor: pointer; transition: 0.4s ease; border-radius: 4px; }
         
-        /* CAMERA FEED */
         #video-feed { width: 100%; max-height: 200px; background: #000; border: 1px dashed var(--border); border-radius: 6px; display: none; object-fit: cover; margin-top: 10px; }
         canvas { display: none; }
 
@@ -136,7 +114,6 @@
 
         #status-indicator { font-size: 0.75rem; color: var(--accent); text-align: right; margin-top: 15px; font-weight: bold; letter-spacing: 1px; transition: 0.4s ease; }
         
-        /* Custom Checkbox */
         .checkbox-wrapper { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
         .checkbox-wrapper input { width: auto; cursor: pointer; }
         .checkbox-wrapper label { margin: 0; cursor: pointer; font-size: 0.6rem; }
@@ -191,7 +168,7 @@
     </div>
 
     <div class="panel">
-        <span class="panel-title">LINGUISTIC_UPLINK // TRANSLATION</span>
+        <span class="panel-title">LINGUISTIC_UPLINK // AUTO-CHUNKING TRANSLATION</span>
         <div class="controls">
             <div>
                 <label>TARGET_DIALECT</label>
@@ -205,7 +182,7 @@
                 </select>
             </div>
             <div>
-                <label>ACTION</label>
+                <label>ACTION (BYPASSES LIMITS)</label>
                 <button id="btn-translate" style="padding: 10px; font-size: 0.7rem;">EXECUTE UPLINK</button>
             </div>
         </div>
@@ -258,8 +235,7 @@
                 <label>AMBIENT GAIN (VOLUME): <span id="ambient-vol-val">30%</span></label>
                 <input type="range" id="ambient-volume" min="0" max="1" value="0.3" step="0.05">
             </div>
-            <button id="export-text" style="font-size: 0.65rem;">EXPORT .DOC DOCUMENT</button>
-            <button id="export-audio" style="font-size: 0.65rem;">CAPTURE .MP3 STREAM</button>
+            <button id="export-text" style="grid-column: span 2; font-size: 0.7rem; padding: 12px;">EXPORT .DOC DOCUMENT</button>
         </div>
     </div>
 
@@ -347,10 +323,7 @@
     // --- SMART VOICE FILTER (PREMIUM HUNTER) ---
     function populateVoices() {
         let voices = synth.getVoices();
-        
-        // Keywords for high-quality OS voices
         const premiumTags = ['aria', 'samantha', 'daniel', 'karen', 'guy', 'siri', 'natural', 'premium', 'google us', 'online'];
-        
         voices.sort((a, b) => {
             let aPrem = premiumTags.some(tag => a.name.toLowerCase().includes(tag));
             let bPrem = premiumTags.some(tag => b.name.toLowerCase().includes(tag));
@@ -372,32 +345,20 @@
         const r = document.documentElement;
         const val = e.target.value;
         if(val === "GERMAN") {
-            r.style.setProperty('--primary', '#ffcc00'); 
-            r.style.setProperty('--bg', '#111');      
-            r.style.setProperty('--glass-bg', 'rgba(255, 204, 0, 0.05)');
-            r.style.setProperty('--border', 'rgba(255, 0, 0, 0.5)'); 
-            r.style.setProperty('--accent', '#ff3300');
-            r.style.setProperty('--scanline', 'rgba(255, 204, 0, 0.05)');
-            r.style.setProperty('--fire-core', '#ffea00');
-            r.style.setProperty('--fire-edge', '#ff0000');
+            r.style.setProperty('--primary', '#ffcc00'); r.style.setProperty('--bg', '#111');      
+            r.style.setProperty('--glass-bg', 'rgba(255, 204, 0, 0.05)'); r.style.setProperty('--border', 'rgba(255, 0, 0, 0.5)'); 
+            r.style.setProperty('--accent', '#ff3300'); r.style.setProperty('--scanline', 'rgba(255, 204, 0, 0.05)');
+            r.style.setProperty('--fire-core', '#ffea00'); r.style.setProperty('--fire-edge', '#ff0000');
         } else if(val === "HACKER") {
-            r.style.setProperty('--primary', '#ffffff'); 
-            r.style.setProperty('--bg', '#020202');      
-            r.style.setProperty('--glass-bg', 'rgba(255, 255, 255, 0.02)');
-            r.style.setProperty('--border', 'rgba(255, 255, 255, 0.2)');
-            r.style.setProperty('--accent', '#777');
-            r.style.setProperty('--scanline', 'rgba(255, 255, 255, 0.03)');
-            r.style.setProperty('--fire-core', '#ffffff');
-            r.style.setProperty('--fire-edge', '#444444');
+            r.style.setProperty('--primary', '#ffffff'); r.style.setProperty('--bg', '#020202');      
+            r.style.setProperty('--glass-bg', 'rgba(255, 255, 255, 0.02)'); r.style.setProperty('--border', 'rgba(255, 255, 255, 0.2)');
+            r.style.setProperty('--accent', '#777'); r.style.setProperty('--scanline', 'rgba(255, 255, 255, 0.03)');
+            r.style.setProperty('--fire-core', '#ffffff'); r.style.setProperty('--fire-edge', '#444444');
         } else {
-            r.style.setProperty('--primary', '#00ff41');
-            r.style.setProperty('--bg', '#050505');
-            r.style.setProperty('--glass-bg', 'rgba(0, 255, 65, 0.05)');
-            r.style.setProperty('--border', 'rgba(0, 255, 65, 0.3)');
-            r.style.setProperty('--accent', 'rgba(0, 255, 65, 0.6)');
-            r.style.setProperty('--scanline', 'rgba(0, 255, 65, 0.05)');
-            r.style.setProperty('--fire-core', '#ffea00');
-            r.style.setProperty('--fire-edge', '#ff3300');
+            r.style.setProperty('--primary', '#00ff41'); r.style.setProperty('--bg', '#050505');
+            r.style.setProperty('--glass-bg', 'rgba(0, 255, 65, 0.05)'); r.style.setProperty('--border', 'rgba(0, 255, 65, 0.3)');
+            r.style.setProperty('--accent', 'rgba(0, 255, 65, 0.6)'); r.style.setProperty('--scanline', 'rgba(0, 255, 65, 0.05)');
+            r.style.setProperty('--fire-core', '#ffea00'); r.style.setProperty('--fire-edge', '#ff3300');
         }
     });
 
@@ -411,18 +372,64 @@
     document.getElementById('avatar-select').addEventListener('change', updateAvatar);
     updateAvatar();
 
-    // --- TRANSLATION UPLINK ---
+    // --- TRANSLATION UPLINK (AUTO-CHUNKING) ---
     document.getElementById('btn-translate').addEventListener('click', async () => {
         const lang = document.getElementById('trans-lang').value;
         const query = textInput.value.trim();
+        const btn = document.getElementById('btn-translate');
         if(!query) return;
-        status.innerText = "SYS.STATUS: UPLINKING...";
-        try {
-            const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(query)}&langpair=auto|${lang}`);
-            const data = await res.json();
-            textInput.value = data.responseData.translatedText;
-            status.innerText = "SYS.STATUS: DECRYPTION COMPLETE.";
-        } catch (e) { status.innerText = "SYS.STATUS: UPLINK FAILED."; }
+        
+        btn.innerText = "PROCESSING...";
+        btn.disabled = true;
+
+        // Auto-Chunking Algorithm (Max 450 chars to avoid 500 limit)
+        const MAX_CHUNK = 450;
+        let chunks = [];
+        let currentIndex = 0;
+
+        while (currentIndex < query.length) {
+            let chunk = query.substring(currentIndex, currentIndex + MAX_CHUNK);
+            if (currentIndex + MAX_CHUNK < query.length) {
+                // Find nearest safe break point to avoid splitting words
+                let splitIndex = Math.max(chunk.lastIndexOf('. '), chunk.lastIndexOf('? '), chunk.lastIndexOf('! '), chunk.lastIndexOf('\n'));
+                if (splitIndex === -1) splitIndex = chunk.lastIndexOf(' ');
+                if (splitIndex <= 0) splitIndex = MAX_CHUNK; // Hard split if no spaces exist
+                
+                chunk = query.substring(currentIndex, currentIndex + splitIndex);
+                currentIndex += splitIndex;
+            } else {
+                currentIndex = query.length;
+            }
+            chunks.push(chunk.trim());
+        }
+
+        let translatedText = "";
+        
+        for (let i = 0; i < chunks.length; i++) {
+            if (!chunks[i]) continue;
+            status.innerText = `SYS.STATUS: UPLINKING... [NODE ${i + 1}/${chunks.length}]`;
+            
+            try {
+                // Critical: 1 second delay to prevent API IP ban
+                if (i > 0) await new Promise(r => setTimeout(r, 1000));
+                
+                const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunks[i])}&langpair=auto|${lang}`);
+                const data = await res.json();
+                
+                if(data.responseData && data.responseData.translatedText) {
+                    translatedText += data.responseData.translatedText + " ";
+                } else {
+                    translatedText += "[API ERROR] ";
+                }
+            } catch (e) { 
+                translatedText += "[NETWORK ERROR] "; 
+            }
+        }
+
+        textInput.value = translatedText.trim();
+        status.innerText = "SYS.STATUS: DECRYPTION COMPLETE.";
+        btn.innerText = "EXECUTE UPLINK";
+        btn.disabled = false;
     });
 
     // --- MASTER CONTROLS & HIGHLIGHTING ---
@@ -434,22 +441,17 @@
         const utter = new SpeechSynthesisUtterance(fullText);
         utter.voice = synth.getVoices().find(v => v.name === voiceSelect.value);
         
-        // Audio Mixing
         utter.volume = document.getElementById('voice-volume').value;
         const amb = document.getElementById('ambient-select').value;
         ambientPlayer.volume = document.getElementById('ambient-volume').value;
         if(amb !== 'none') { ambientPlayer.src = amb; ambientPlayer.play(); }
         
-        // Robot Override
         if(document.getElementById('robot-override').checked) {
-            utter.pitch = 0.1;
-            utter.rate = 0.7;
+            utter.pitch = 0.1; utter.rate = 0.7;
         } else {
-            utter.rate = document.getElementById('rate').value;
-            utter.pitch = document.getElementById('pitch').value;
+            utter.rate = document.getElementById('rate').value; utter.pitch = document.getElementById('pitch').value;
         }
         
-        // Highlighting Logic
         textInput.style.color = "transparent"; 
         highlightLayer.style.display = "block"; 
         highlightLayer.innerText = fullText;
@@ -478,14 +480,11 @@
     });
 
     document.getElementById('btn-stop').addEventListener('click', () => { 
-        synth.cancel(); 
-        ambientPlayer.pause(); 
-        status.innerText = "SYS.STATUS: KILLED."; 
-        textInput.style.color = "var(--text)";
-        highlightLayer.style.display = "none";
+        synth.cancel(); ambientPlayer.pause(); status.innerText = "SYS.STATUS: KILLED."; 
+        textInput.style.color = "var(--text)"; highlightLayer.style.display = "none";
     });
 
-    // --- EXFILTRATION (.DOC & MP3) ---
+    // --- EXFILTRATION (.DOC) ---
     document.getElementById('export-text').addEventListener('click', () => {
         const htmlContent = `
             <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
@@ -500,25 +499,6 @@
         status.innerText = "SYS.STATUS: DOCUMENT SAVED.";
     });
 
-    let rec; let chunks = [];
-    document.getElementById('export-audio').addEventListener('click', function() {
-        if(this.innerText === "CAPTURE .MP3 STREAM") {
-            try {
-                rec = new MediaRecorder(ambientPlayer.captureStream());
-                rec.ondataavailable = e => chunks.push(e.data);
-                rec.onstop = () => {
-                    const b = new Blob(chunks, {type:'audio/mp3'});
-                    const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download='Zone69_Audio.mp3'; a.click();
-                    chunks = [];
-                };
-                rec.start(); this.innerText = "STOP RECORDING"; status.innerText = "SYS.STATUS: CAPTURING...";
-            } catch(e) { alert("Stream Capture restricted by browser."); }
-        } else {
-            rec.stop(); this.innerText = "CAPTURE .MP3 STREAM"; status.innerText = "SYS.STATUS: EXPORTED.";
-        }
-    });
-
-    // Custom Audio Upload
     document.getElementById('custom-audio').addEventListener('change', function(e) {
         if(e.target.files[0]) { 
             ambientPlayer.src = URL.createObjectURL(e.target.files[0]); 
@@ -526,7 +506,6 @@
         }
     });
 
-    // UI Sliders Feedback
     document.getElementById('rate').oninput = (e) => document.getElementById('rate-val').innerText = e.target.value;
     document.getElementById('pitch').oninput = (e) => document.getElementById('pitch-val').innerText = e.target.value;
     document.getElementById('voice-volume').oninput = (e) => document.getElementById('voice-vol-val').innerText = Math.round(e.target.value * 100) + "%";
