@@ -149,8 +149,15 @@
         <input type="file" id="pdf-upload" accept=".pdf" style="display:none;">
         
         <div class="text-layer-wrapper">
-            <textarea id="text-input" placeholder="> AWAITING DATA INPUT OR OCR SCAN..."></textarea>
+            <textarea id="text-input" placeholder="> AWAITING DATA INPUT, OCR SCAN, OR MIC DICTATION..."></textarea>
             <div id="highlight-layer"></div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <span class="panel-title">VOCAL_UPLINK // MIC DICTATION</span>
+        <div class="controls" style="grid-template-columns: 1fr;">
+            <button id="btn-dictate" style="padding: 12px; font-size: 0.8rem; border-color: var(--primary);">[ INITIATE MICROPHONE ]</button>
         </div>
     </div>
 
@@ -487,20 +494,86 @@
     document.getElementById('ambient-volume').oninput = (e) => { document.getElementById('ambient-vol-val').innerText = Math.round(e.target.value * 100) + "%"; ambientPlayer.volume = e.target.value; };
     ambientPlayer.volume = document.getElementById('ambient-volume').value;
 
-</script>
-<script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                .then(registration => {
-                    console.log('SYS.STATUS: PWA SERVICE WORKER ACTIVE', registration.scope);
-                })
-                .catch(err => {
-                    console.log('SYS.STATUS: PWA REGISTRATION FAILED', err);
-                });
-            });
+    // --- NEW FEATURE: MIC DICTATION (SPEECH TO TEXT) ---
+    const btnDictate = document.getElementById('btn-dictate');
+    let isRecording = false;
+    let recognition = null;
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = true; 
+        recognition.interimResults = false; 
+        recognition.lang = 'en-US'; 
+
+        recognition.onstart = () => {
+            isRecording = true;
+            btnDictate.innerText = "[ RECORDING... CLICK TO STOP ]";
+            btnDictate.style.background = "var(--danger)";
+            btnDictate.style.color = "#000";
+            btnDictate.style.borderColor = "var(--danger)";
+            statusLog.innerText = "SYS.STATUS: MICROPHONE LIVE.";
+        };
+
+        recognition.onresult = (event) => {
+            let finalTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript + " ";
+                }
+            }
+            if (finalTranscript) {
+                textInput.value += (textInput.value ? " " : "") + finalTranscript.trim();
+            }
+        };
+
+        recognition.onerror = (event) => {
+            statusLog.innerText = "SYS.STATUS: MIC ERROR (" + event.error + ")";
+            stopRecording();
+        };
+
+        recognition.onend = () => {
+            if (isRecording) stopRecording(); 
+        };
+    } else {
+        btnDictate.innerText = "[ MIC NOT SUPPORTED IN THIS BROWSER ]";
+        btnDictate.disabled = true;
+    }
+
+    function stopRecording() {
+        isRecording = false;
+        if(recognition) recognition.stop();
+        btnDictate.innerText = "[ INITIATE MICROPHONE ]";
+        btnDictate.style.background = "rgba(0,0,0,0.4)";
+        btnDictate.style.color = "var(--primary)";
+        btnDictate.style.borderColor = "var(--primary)";
+        statusLog.innerText = "SYS.STATUS: MIC DISCONNECTED.";
+    }
+
+    btnDictate.addEventListener('click', () => {
+        if (!recognition) return;
+        if (isRecording) {
+            stopRecording();
+        } else {
+            try { recognition.start(); } catch(e) {}
         }
-    </script>
+    });
+
+</script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+            .then(registration => {
+                console.log('SYS.STATUS: PWA SERVICE WORKER ACTIVE', registration.scope);
+            })
+            .catch(err => {
+                console.log('SYS.STATUS: PWA REGISTRATION FAILED', err);
+            });
+        });
+    }
+</script>
 
 </body>
 </html>
