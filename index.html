@@ -255,34 +255,70 @@
 <audio id="ambient-player" loop crossorigin="anonymous"></audio>
 
 <script>
-    // --- AIRLOCK SECURITY LOGIC ---
-    const MASTER_PASS = "6969";
+    // --- AIRLOCK SECURITY LOGIC (DYNAMIC PIN UPGRADE) ---
     const airlock = document.getElementById('airlock');
     const mainConsole = document.getElementById('main-console');
     const passInput = document.getElementById('passcode');
     const statusLog = document.getElementById('status-indicator');
+    const subtitleLog = document.querySelector('#airlock p'); // Grabs the subtitle
+
+    // Check if the user has a PIN saved in the browser
+    let savedPin = localStorage.getItem('zone69_pin');
+
+    // State 1: First-Time User Setup
+    if (!savedPin) {
+        subtitleLog.innerText = "INITIALIZE VAULT // CREATE 4-DIGIT PIN";
+        subtitleLog.style.color = "var(--primary)";
+        passInput.style.borderBottomColor = "var(--primary)";
+        passInput.style.color = "var(--primary)";
+    }
 
     passInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-            if (passInput.value === MASTER_PASS) {
-                // Access Granted
-                airlock.style.opacity = '0';
-                setTimeout(() => {
-                    airlock.style.display = 'none';
-                    mainConsole.style.display = 'block';
-                    setTimeout(() => mainConsole.style.opacity = '1', 50);
-                    statusLog.innerText = "SYS.STATUS: SYSTEM UNLOCKED.";
-                    loadVaultData(); // Load the ghost memory once inside
-                }, 800);
+            const enteredPin = passInput.value;
+
+            // Input Validation
+            if (enteredPin.length < 4) {
+                subtitleLog.innerText = "> ERROR: PIN MUST BE AT LEAST 4 DIGITS.";
+                subtitleLog.style.color = "var(--danger)";
+                return; // Kills the function early
+            }
+
+            if (!savedPin) {
+                // State 1 Action: Registration
+                localStorage.setItem('zone69_pin', enteredPin);
+                savedPin = enteredPin; // Update active memory
+                unlockSystem("VAULT SECURED. PIN MEMORIZED.");
             } else {
-                // Access Denied (Shake effect)
-                passInput.value = '';
-                airlock.style.transform = 'translateX(-15px)';
-                setTimeout(() => airlock.style.transform = 'translateX(15px)', 100);
-                setTimeout(() => airlock.style.transform = 'translateX(0)', 200);
+                // State 2 Action: Login Verification
+                if (enteredPin === savedPin) {
+                    unlockSystem("SYSTEM UNLOCKED.");
+                } else {
+                    // Error Handling: Access Denied
+                    passInput.value = '';
+                    subtitleLog.innerText = "> ACCESS DENIED. INTRUSION LOGGED.";
+                    subtitleLog.style.color = "var(--danger)";
+                    
+                    // Shake effect
+                    airlock.style.transform = 'translateX(-15px)';
+                    setTimeout(() => airlock.style.transform = 'translateX(15px)', 100);
+                    setTimeout(() => airlock.style.transform = 'translateX(0)', 200);
+                }
             }
         }
     });
+
+    // Helper function to animate the doors opening
+    function unlockSystem(statusMessage) {
+        airlock.style.opacity = '0';
+        setTimeout(() => {
+            airlock.style.display = 'none';
+            mainConsole.style.display = 'block';
+            setTimeout(() => mainConsole.style.opacity = '1', 50);
+            statusLog.innerText = `SYS.STATUS: ${statusMessage}`;
+            loadVaultData(); // Load the ghost memory once inside
+        }, 800);
+    }
 
     // Lock Button Logic
     document.getElementById('btn-lock').addEventListener('click', () => {
