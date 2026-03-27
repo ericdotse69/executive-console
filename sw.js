@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zone69-cache-v3';
+const CACHE_NAME = 'zone69-cache-v4';
 const urlsToCache = [
   './',
   './index.html',

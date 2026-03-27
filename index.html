@@ -33,16 +33,27 @@
             background-size: 100% 3px; min-height: 100vh; margin: 0; transition: all 0.4s ease;
         }
 
-        /* --- THE AIRLOCK (LOGIN) --- */
+        /* --- THE AIRLOCK (LOGIN UI) --- */
         #airlock {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #020202; z-index: 9999; display: flex; flex-direction: column;
             justify-content: center; align-items: center; transition: opacity 0.8s ease;
         }
-        .sys-title { font-family: 'Share Tech Mono', monospace; font-size: 3rem; letter-spacing: 10px; color: var(--danger); text-shadow: 0 0 20px var(--danger); margin-bottom: 10px; text-transform: uppercase; }
+        .sys-title { font-family: 'Share Tech Mono', monospace; font-size: 3rem; letter-spacing: 10px; color: var(--primary); text-shadow: 0 0 20px var(--scanline); margin-bottom: 10px; text-transform: uppercase; }
+        
+        #auth-menu { display: flex; gap: 20px; margin-top: 30px; }
+        .auth-btn { padding: 15px 30px; font-size: 1rem; cursor: pointer; background: transparent; border: 1px solid var(--primary); color: var(--primary); text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; }
+        .auth-btn:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
+        .auth-btn-danger { border-color: var(--danger); color: var(--danger); }
+        .auth-btn-danger:hover { background: var(--danger); color: #000; box-shadow: 0 0 15px var(--danger); }
+
+        #auth-input-area { display: none; flex-direction: column; align-items: center; margin-top: 20px; }
+        #passcode { background: transparent; border: none; border-bottom: 2px solid var(--primary); color: var(--primary); font-size: 1.5rem; text-align: center; outline: none; width: 250px; letter-spacing: 5px; margin-top: 20px; padding-bottom: 5px; transition: 0.3s; }
+        #btn-cancel { margin-top: 25px; padding: 8px 15px; font-size: 0.7rem; border: 1px solid #555; background: transparent; color: #555; cursor: pointer; transition: 0.3s; }
+        #btn-cancel:hover { color: #fff; border-color: #fff; }
+
         .blink { animation: blinker 1s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
-        #passcode { background: transparent; border: none; border-bottom: 2px solid var(--danger); color: var(--danger); font-size: 1.5rem; text-align: center; outline: none; width: 250px; letter-spacing: 5px; margin-top: 20px; padding-bottom: 5px; }
         
         /* --- MAIN CONSOLE --- */
         .container { 
@@ -50,7 +61,7 @@
             backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
             padding: 30px; border: 1px solid var(--border); border-radius: 12px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8), inset 0 0 20px var(--scanline); 
-            transition: all 0.4s ease; display: none; opacity: 0; /* Hidden by default */
+            transition: all 0.4s ease; display: none; opacity: 0;
         }
 
         .header-container { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px dashed var(--border); padding-bottom: 15px; margin-bottom: 20px; }
@@ -95,7 +106,6 @@
         .checkbox-wrapper input { width: auto; cursor: pointer; }
         .checkbox-wrapper label { margin: 0; cursor: pointer; font-size: 0.6rem; }
 
-        /* Vault Specific Overrides */
         .vault-btn { border-color: var(--danger); color: var(--danger); padding: 12px; font-size: 0.7rem; }
         .vault-btn:hover { background: var(--danger); color: #000; box-shadow: 0 0 15px var(--danger); }
     </style>
@@ -104,16 +114,24 @@
 
 <div id="airlock">
     <h1 class="sys-title">ZONE 69</h1>
-    <p style="color: var(--danger); letter-spacing: 2px;">RESTRICTED ACCESS // ENTER PASSCODE</p>
-    <input type="password" id="passcode" autofocus autocomplete="off">
-    <p style="font-size: 0.7rem; color: #555; margin-top: 20px;">> AWAITING INPUT<span class="blink">_</span></p>
+    
+    <div id="auth-menu">
+        <button id="btn-show-login" class="auth-btn">LOGIN</button>
+        <button id="btn-show-register" class="auth-btn auth-btn-danger">CREATE ACCOUNT</button>
+    </div>
+
+    <div id="auth-input-area">
+        <p id="subtitle-log" style="color: var(--primary); letter-spacing: 2px; transition: 0.3s;"></p>
+        <input type="password" id="passcode" autocomplete="off">
+        <button id="btn-cancel">[ CANCEL / GO BACK ]</button>
+    </div>
 </div>
 
 <div class="container" id="main-console">
     <div class="header-container">
         <div>
             <h2 class="hacker-title">Zone 69</h2>
-            <span class="badge" id="btn-lock" title="Click to Secure App">[ LOCK SYSTEM ]</span>
+            <span class="badge" id="btn-lock" title="Click to Secure App">[ LOCK SYSTEM (ALT+L) ]</span>
             <div style="margin-top: 12px;">
                 <select id="theme-select">
                     <option value="DEFAULT">>> OPTICS: GLASS GREEN (CORE)</option>
@@ -136,7 +154,7 @@
     <div class="panel">
         <span class="panel-title">SYS.VISION // CAM EYE OCR</span>
         <div class="controls">
-            <button id="btn-start-cam" style="padding: 10px; font-size: 0.7rem;">1. ACTIVATE OPTICS</button>
+            <button id="btn-start-cam" style="padding: 10px; font-size: 0.7rem;">1. ACTIVATE OPTICS (ALT+O)</button>
             <button id="btn-capture-cam" style="padding: 10px; font-size: 0.7rem; display:none; border-color: #00d4ff; color: #00d4ff;">2. EXTRACT TEXT</button>
         </div>
         <video id="video-feed" autoplay playsinline></video>
@@ -157,7 +175,7 @@
     <div class="panel">
         <span class="panel-title">VOCAL_UPLINK // MIC DICTATION</span>
         <div class="controls" style="grid-template-columns: 1fr;">
-            <button id="btn-dictate" style="padding: 12px; font-size: 0.8rem; border-color: var(--primary);">[ INITIATE MICROPHONE ]</button>
+            <button id="btn-dictate" style="padding: 12px; font-size: 0.8rem; border-color: var(--primary);">[ INITIATE MICROPHONE (ALT+M) ]</button>
         </div>
     </div>
 
@@ -177,7 +195,7 @@
             </div>
             <div>
                 <label>ACTION (BYPASSES LIMITS)</label>
-                <button id="btn-translate" style="padding: 10px; font-size: 0.7rem;">EXECUTE UPLINK</button>
+                <button id="btn-translate" style="padding: 10px; font-size: 0.7rem;">EXECUTE UPLINK (ALT+T)</button>
             </div>
         </div>
     </div>
@@ -245,8 +263,8 @@
     </div>
 
     <div class="btn-group">
-        <button class="btn-play" id="btn-speak">EXECUTE TRANSMISSION</button>
-        <button class="btn-stop" id="btn-stop">KILL PROCESS</button>
+        <button class="btn-play" id="btn-speak">EXECUTE TRANSMISSION (ALT+S)</button>
+        <button class="btn-stop" id="btn-stop">KILL PROCESS (ALT+K)</button>
     </div>
 
     <div id="status-indicator">SYS.STATUS: LOCKED</div>
@@ -255,51 +273,75 @@
 <audio id="ambient-player" loop crossorigin="anonymous"></audio>
 
 <script>
-    // --- AIRLOCK SECURITY LOGIC (DYNAMIC PIN UPGRADE) ---
+    // --- AIRLOCK: TRUE LOGIN & REGISTRATION SYSTEM ---
     const airlock = document.getElementById('airlock');
-    const mainConsole = document.getElementById('main-console');
+    const authMenu = document.getElementById('auth-menu');
+    const authInputArea = document.getElementById('auth-input-area');
+    const btnShowLogin = document.getElementById('btn-show-login');
+    const btnShowRegister = document.getElementById('btn-show-register');
+    const btnCancel = document.getElementById('btn-cancel');
     const passInput = document.getElementById('passcode');
+    const subtitleLog = document.getElementById('subtitle-log');
+    const mainConsole = document.getElementById('main-console');
     const statusLog = document.getElementById('status-indicator');
-    const subtitleLog = document.querySelector('#airlock p'); // Grabs the subtitle
 
-    // Check if the user has a PIN saved in the browser
-    let savedPin = localStorage.getItem('zone69_pin');
+    let currentAuthMode = ''; 
 
-    // State 1: First-Time User Setup
-    if (!savedPin) {
-        subtitleLog.innerText = "INITIALIZE VAULT // CREATE 4-DIGIT PIN";
+    btnShowLogin.addEventListener('click', () => {
+        currentAuthMode = 'login';
+        authMenu.style.display = 'none';
+        authInputArea.style.display = 'flex';
+        subtitleLog.innerText = "ENTER YOUR 4-DIGIT PIN";
         subtitleLog.style.color = "var(--primary)";
         passInput.style.borderBottomColor = "var(--primary)";
         passInput.style.color = "var(--primary)";
-    }
+        passInput.value = '';
+        passInput.focus();
+    });
+
+    btnShowRegister.addEventListener('click', () => {
+        currentAuthMode = 'register';
+        authMenu.style.display = 'none';
+        authInputArea.style.display = 'flex';
+        subtitleLog.innerText = "CREATE A NEW 4-DIGIT PIN";
+        subtitleLog.style.color = "var(--danger)";
+        passInput.style.borderBottomColor = "var(--danger)";
+        passInput.style.color = "var(--danger)";
+        passInput.value = '';
+        passInput.focus();
+    });
+
+    btnCancel.addEventListener('click', () => {
+        authInputArea.style.display = 'none';
+        authMenu.style.display = 'flex';
+    });
 
     passInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             const enteredPin = passInput.value;
 
-            // Input Validation
             if (enteredPin.length < 4) {
                 subtitleLog.innerText = "> ERROR: PIN MUST BE AT LEAST 4 DIGITS.";
-                subtitleLog.style.color = "var(--danger)";
-                return; // Kills the function early
+                return;
             }
 
-            if (!savedPin) {
-                // State 1 Action: Registration
+            if (currentAuthMode === 'register') {
                 localStorage.setItem('zone69_pin', enteredPin);
-                savedPin = enteredPin; // Update active memory
-                unlockSystem("VAULT SECURED. PIN MEMORIZED.");
-            } else {
-                // State 2 Action: Login Verification
-                if (enteredPin === savedPin) {
-                    unlockSystem("SYSTEM UNLOCKED.");
+                unlockSystem("NEW ACCOUNT CREATED. SYSTEM ONLINE.");
+            } else if (currentAuthMode === 'login') {
+                const savedPin = localStorage.getItem('zone69_pin');
+                
+                if (!savedPin) {
+                    subtitleLog.innerText = "> NO ACCOUNT FOUND. PLEASE CREATE ONE.";
+                    subtitleLog.style.color = "var(--danger)";
+                    passInput.value = '';
+                } else if (enteredPin === savedPin) {
+                    unlockSystem("SYSTEM UNLOCKED. WELCOME BACK.");
                 } else {
-                    // Error Handling: Access Denied
                     passInput.value = '';
                     subtitleLog.innerText = "> ACCESS DENIED. INTRUSION LOGGED.";
                     subtitleLog.style.color = "var(--danger)";
                     
-                    // Shake effect
                     airlock.style.transform = 'translateX(-15px)';
                     setTimeout(() => airlock.style.transform = 'translateX(15px)', 100);
                     setTimeout(() => airlock.style.transform = 'translateX(0)', 200);
@@ -308,7 +350,6 @@
         }
     });
 
-    // Helper function to animate the doors opening
     function unlockSystem(statusMessage) {
         airlock.style.opacity = '0';
         setTimeout(() => {
@@ -316,20 +357,35 @@
             mainConsole.style.display = 'block';
             setTimeout(() => mainConsole.style.opacity = '1', 50);
             statusLog.innerText = `SYS.STATUS: ${statusMessage}`;
-            loadVaultData(); // Load the ghost memory once inside
+            loadVaultData(); 
+            loadMainData();  
         }, 800);
     }
 
-    // Lock Button Logic
     document.getElementById('btn-lock').addEventListener('click', () => {
         mainConsole.style.opacity = '0';
         setTimeout(() => {
             mainConsole.style.display = 'none';
             airlock.style.display = 'flex';
             setTimeout(() => airlock.style.opacity = '1', 50);
-            passInput.value = '';
+            authInputArea.style.display = 'none';
+            authMenu.style.display = 'flex';
             statusLog.innerText = "SYS.STATUS: LOCKED";
         }, 500);
+    });
+
+    // --- MAIN CONSOLE AUTOSAVE (GHOST MEMORY 2.0) ---
+    const textInput = document.getElementById('text-input');
+
+    function loadMainData() {
+        const savedMainText = localStorage.getItem('zone69_main_text');
+        if (savedMainText) {
+            textInput.value = savedMainText;
+        }
+    }
+
+    textInput.addEventListener('input', () => {
+        localStorage.setItem('zone69_main_text', textInput.value);
     });
 
     // --- VAULT 69 DEEP STORAGE LOGIC ---
@@ -362,7 +418,6 @@
 
     // --- EVERYTHING ELSE (CONSOLE CORE) ---
     const synth = window.speechSynthesis;
-    const textInput = document.getElementById('text-input');
     const highlightLayer = document.getElementById('highlight-layer');
     const voiceSelect = document.getElementById('voice-select');
     const ambientPlayer = document.getElementById('ambient-player');
@@ -388,6 +443,7 @@
                     text += content.items.map(s => s.str).join(' ') + "\n";
                 }
                 textInput.value = text;
+                localStorage.setItem('zone69_main_text', textInput.value); 
                 statusLog.innerText = "SYS.STATUS: DATA INJECTED (" + pdf.numPages + " PGS)";
             } catch (e) { statusLog.innerText = "SYS.STATUS: ERROR DECRYPTING."; }
         };
@@ -414,6 +470,7 @@
         try {
             const result = await Tesseract.recognize(canvas, 'eng');
             textInput.value += "\n" + result.data.text;
+            localStorage.setItem('zone69_main_text', textInput.value); 
             statusLog.innerText = "SYS.STATUS: TEXT EXTRACTED.";
             streamRef.getTracks().forEach(track => track.stop());
             videoFeed.style.display = 'none'; btnCaptureCam.style.display = 'none'; btnStartCam.style.display = 'block';
@@ -484,7 +541,10 @@
             } catch (e) { translatedText += "[NETWORK ERROR] "; }
         }
         textInput.value = translatedText.trim();
-        statusLog.innerText = "SYS.STATUS: DECRYPTION COMPLETE."; btn.innerText = "EXECUTE UPLINK"; btn.disabled = false;
+        localStorage.setItem('zone69_main_text', textInput.value); 
+        statusLog.innerText = "SYS.STATUS: DECRYPTION COMPLETE."; 
+        btn.innerText = "EXECUTE UPLINK (ALT+T)"; 
+        btn.disabled = false;
     });
 
     // TRANSMISSION (TTS & HIGHLIGHTING)
@@ -530,7 +590,7 @@
     document.getElementById('ambient-volume').oninput = (e) => { document.getElementById('ambient-vol-val').innerText = Math.round(e.target.value * 100) + "%"; ambientPlayer.volume = e.target.value; };
     ambientPlayer.volume = document.getElementById('ambient-volume').value;
 
-    // --- NEW FEATURE: MIC DICTATION (SPEECH TO TEXT) ---
+    // --- MIC DICTATION (SPEECH TO TEXT) ---
     const btnDictate = document.getElementById('btn-dictate');
     let isRecording = false;
     let recognition = null;
@@ -544,7 +604,7 @@
 
         recognition.onstart = () => {
             isRecording = true;
-            btnDictate.innerText = "[ RECORDING... CLICK TO STOP ]";
+            btnDictate.innerText = "[ RECORDING... (ALT+M TO STOP) ]";
             btnDictate.style.background = "var(--danger)";
             btnDictate.style.color = "#000";
             btnDictate.style.borderColor = "var(--danger)";
@@ -560,6 +620,7 @@
             }
             if (finalTranscript) {
                 textInput.value += (textInput.value ? " " : "") + finalTranscript.trim();
+                localStorage.setItem('zone69_main_text', textInput.value); 
             }
         };
 
@@ -579,7 +640,7 @@
     function stopRecording() {
         isRecording = false;
         if(recognition) recognition.stop();
-        btnDictate.innerText = "[ INITIATE MICROPHONE ]";
+        btnDictate.innerText = "[ INITIATE MICROPHONE (ALT+M) ]";
         btnDictate.style.background = "rgba(0,0,0,0.4)";
         btnDictate.style.color = "var(--primary)";
         btnDictate.style.borderColor = "var(--primary)";
@@ -592,6 +653,39 @@
             stopRecording();
         } else {
             try { recognition.start(); } catch(e) {}
+        }
+    });
+
+    // --- HACKER KEYBOARD SHORTCUTS (VIM/TMUX STYLE) ---
+    document.addEventListener('keydown', (e) => {
+        // Only trigger if the ALT key is held down
+        if (e.altKey) {
+            switch(e.key.toLowerCase()) {
+                case 'm': // Alt + M: Microphone
+                    e.preventDefault();
+                    document.getElementById('btn-dictate').click();
+                    break;
+                case 's': // Alt + S: Speak
+                    e.preventDefault();
+                    document.getElementById('btn-speak').click();
+                    break;
+                case 'k': // Alt + K: Kill audio
+                    e.preventDefault();
+                    document.getElementById('btn-stop').click();
+                    break;
+                case 't': // Alt + T: Translate
+                    e.preventDefault();
+                    document.getElementById('btn-translate').click();
+                    break;
+                case 'o': // Alt + O: Optics
+                    e.preventDefault();
+                    document.getElementById('btn-start-cam').click();
+                    break;
+                case 'l': // Alt + L: Lock System
+                    e.preventDefault();
+                    document.getElementById('btn-lock').click();
+                    break;
+            }
         }
     });
 
